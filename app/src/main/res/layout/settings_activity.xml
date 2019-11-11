@@ -46,15 +46,6 @@
                 android:max="255"
                 android:progress="255" />
 
-            <Switch
-                android:id="@+id/autoauto"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:text="Automatic line follower"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
             <TextView
                 android:id="@+id/textView4"
                 android:layout_width="match_parent"
@@ -78,6 +69,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Select Device" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5px"
+                android:layout_marginTop="10dp"
+                android:text="Advanced settings"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:text="Automata Behaviour"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+            <Switch
+                android:id="@+id/autoauto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:text="Automatic line follower"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <Button
                 android:id="@+id/sermon"
