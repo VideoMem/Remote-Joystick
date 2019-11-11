@@ -9,8 +9,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         XYView xy = new XYView(this, this);
         setContentView(xy);
-        xy.invalidate();
-
     }
 
 }

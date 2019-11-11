@@ -8,12 +8,9 @@ import android.graphics.RectF;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
-import static java.lang.Math.atan;
 import static java.lang.Math.cos;
 import static java.lang.Math.round;
 import static java.lang.Math.sin;
-
-
 
 public class JoystickWidgets extends ViewPort {
     protected Pallete colors;
@@ -56,6 +53,11 @@ public class JoystickWidgets extends ViewPort {
 
     public int getMaxPower() { return maxPower; }
     public void setMaxPower(int v) { maxPower = v; }
+    public void setSens(double x, double y) { sensx = x; sensy = y; }
+    public void setSens(double v) { setSens(v,v); }
+    public double getSensx() { return sensx; }
+    public double getSensy() { return sensy; }
+    public double getSens() { return getSensx(); }
 
     public boolean zero() {
         Point center = new Point(); middle(center);
@@ -75,6 +77,42 @@ public class JoystickWidgets extends ViewPort {
         Point p = new Point();
         getSize(p);
         mCanvas.drawText("Hello world", 40, 180, paint);
+    }
+
+
+    public void drawOption(String color) {
+        Paint paint = new Paint();
+        Point size = new Point(); getSize(size);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.parseColor(color));
+        int len = sizer(Sizes.small) /2;
+        int sep = sizer(Sizes.small) /8;
+        paint.setStrokeWidth(6);
+        for(int i = 1; i < 8; i++){
+            if(i % 2 == 0 )
+            mCanvas.drawLine(
+                    size.x - sizer(Sizes.small) + sep,
+                    i * sep,
+                    size.x - sep,
+                    i * sep,
+                    paint
+            );
+        }
+    }
+
+    public void drawOptionB() {
+        Paint paint = new Paint();
+        Point size = new Point(); getSize(size);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.parseColor(colors.foreground));
+        mCanvas.drawRect(new RectF(
+                size.x - sizer(Sizes.small),
+                0,
+                size.x,
+                sizer(Sizes.small)),
+                paint);
+        drawOption(colors.background);
+        invalidate();
     }
 
     public int xPos(int max, Point crt) {
@@ -136,13 +174,10 @@ public class JoystickWidgets extends ViewPort {
         paint.setColor(Color.parseColor(colors.foreground));
         paint.setTextSize(60);
         if(debugLevel > 0) {
-            //mCanvas.drawText(String.format("X: %03d", px), 40, 80, paint);
-           // mCanvas.drawText(String.format("Y: %03d", py), 40, 140, paint);
             mCanvas.drawText(String.format("U: %03d", pu), 40, 80, paint);
             mCanvas.drawText(String.format("V: %03d", pv), 40, 140, paint);
         }
     }
-
 
     public void rubberCtrl(int x, int y) {
         Point size = new Point();
@@ -154,24 +189,6 @@ public class JoystickWidgets extends ViewPort {
         crossHair(movex,movey);
         ox = x;
         oy = y;
-    }
-
-    protected int radius() {
-        int radius = (smaller() - sizer(Sizes.small)) /2;
-        return radius;
-    }
-
-    public double angle(int x, int y) {
-        Point cartesian = new Point();
-        Point screen = new Point();
-        toCartesian(x, y, cartesian);
-        fromCartesian(cartesian.x, cartesian.y, screen);
-
-        double angle = 0;
-        if (cartesian.x == 0) cartesian.x = 1;
-        angle = atan((double) cartesian.y / cartesian.x);
-
-        return angle;
     }
 
     public void xyScreen() {
@@ -207,7 +224,7 @@ public class JoystickWidgets extends ViewPort {
         mCanvas.drawText("L", center.x - radius() -15, center.y + 15, paint);
         paint.setTextAlign(Paint.Align.LEFT);
         mCanvas.drawText("R", center.x + radius() +15, center.y + 15, paint);
-
+        drawOption(colors.foreground);
 
         if (radius(x, y) > radius()) {
             Point cartesian = new Point();
@@ -245,12 +262,5 @@ public class JoystickWidgets extends ViewPort {
         powerUi();
     }
 
-    protected int sizer(double percent) {
-        Point p = new Point();
-        getSize(p);
-        int max = isVertical()? p.y: p.x;
-        double aux = max * percent / 100;
-        return (int) round(aux);
-    }
 
 }

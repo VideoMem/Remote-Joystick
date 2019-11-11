@@ -4,7 +4,9 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import static java.lang.Math.atan;
 import static java.lang.Math.pow;
+import static java.lang.Math.round;
 import static java.lang.Math.sqrt;
 
 public class ViewPort extends View {
@@ -72,11 +74,38 @@ public class ViewPort extends View {
         }
     }
 
+    protected int sizer(double percent) {
+        Point p = new Point();
+        getSize(p);
+        int max = isVertical()? p.y: p.x;
+        double aux = max * percent / 100;
+        return (int) round(aux);
+    }
+
     public int smaller() {
         Point p = new Point();
         getSize(p);
         return p.x > p.y? p.y:p.x;
     }
+
+    protected int radius() {
+        int radius = (smaller() - sizer(Sizes.small)) /2;
+        return radius;
+    }
+
+    public double angle(int x, int y) {
+        Point cartesian = new Point();
+        Point screen = new Point();
+        toCartesian(x, y, cartesian);
+        fromCartesian(cartesian.x, cartesian.y, screen);
+
+        double angle = 0;
+        if (cartesian.x == 0) cartesian.x = 1;
+        angle = atan((double) cartesian.y / cartesian.x);
+
+        return angle;
+    }
+
 
     public boolean isVertical() {
         Point p = new Point();

@@ -1,6 +1,7 @@
 package com.example.remotejoystick;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.view.MotionEvent;
@@ -17,13 +18,14 @@ public class XYView extends JoystickWidgets {
     AppCompatActivity activity;
     Timer timer;
     protected boolean ignoreUpdate;
+    protected boolean ignoreMove;
 
     public XYView(Context context, AppCompatActivity ref) {
         super(context);
         activity = ref;
         timer = new Timer();
         ignoreUpdate = false; retractTimer(500);
-
+        ignoreMove = false;
     }
 
     @Override
@@ -106,6 +108,24 @@ public class XYView extends JoystickWidgets {
         timer.schedule(task, delay);
     }
 
+    public boolean options(int x, int y) {
+        Point size = new Point();
+        getSize(size);
+        if(  x > (size.x - sizer(Sizes.small))
+         && (y < sizer(Sizes.small)) && zero()) {
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public void SettingsView() {
+        Intent intent = new Intent(activity, SettingsView.class);
+        activity.startActivity(intent);
+
+        //activity.setContentView(R.layout.settings_activity);
+        //activity.startActivity(R.layout.settings_activity);
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
@@ -115,16 +135,26 @@ public class XYView extends JoystickWidgets {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 ignoreUpdate = true;
-                ox = x;
-                oy = y;
+                if(!options(x,y)) {
+                    ox = x;
+                    oy = y;
+                    ignoreMove = false;
+                } else {
+                    ignoreMove = true;
+                    drawOptionB();
+                }
                 break;
             case MotionEvent.ACTION_MOVE:
                 ignoreUpdate = true;
-                rubberCtrl(x, y);
+                if(!ignoreMove)
+                    rubberCtrl(x, y);
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
                 ignoreUpdate = false;
+                if(options(x,y)) {
+                    SettingsView();
+                }
                 animTimer(retractDelay);
                 break;
         }

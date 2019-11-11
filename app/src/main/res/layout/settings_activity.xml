@@ -1,0 +1,91 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/settings"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:text="Joystick Sensitivity"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+            <SeekBar
+                android:id="@+id/sensitivity"
+                style="@style/Widget.AppCompat.SeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                android:max="8"
+                android:progress="4" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:text="Motor Power Limit"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+            <SeekBar
+                android:id="@+id/power"
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                android:indeterminate="false"
+                android:max="255"
+                android:progress="255" />
+
+            <Switch
+                android:id="@+id/autoauto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:text="Automatic line follower"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:text="Device"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="DevID"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:verticalScrollbarPosition="defaultPosition"
+                android:layout_marginLeft="10dp" />
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Device" />
+
+            <Button
+                android:id="@+id/sermon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text=" Serial Monitor" />
+
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>
