@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Remote Joystick</string>
+    <string name="title_activity_main">XY control</string>
+</resources>
