@@ -155,6 +155,7 @@ public class XYView extends JoystickWidgets {
                 if(options(x,y)) {
                     SettingsView();
                 }
+                truncate();
                 animTimer(retractDelay);
                 break;
         }

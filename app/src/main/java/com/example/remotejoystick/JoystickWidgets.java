@@ -26,6 +26,7 @@ public class JoystickWidgets extends ViewPort {
     protected Point screen;
     protected int debugLevel;
     protected int maxPower;
+    protected int displayMask;
 
     public JoystickWidgets(Context context)  {
         super(context);
@@ -33,6 +34,7 @@ public class JoystickWidgets extends ViewPort {
         screen = new Point();
         debugLevel = 1;
         maxPower = 255;
+        displayMask = 0;
         reset();
     }
 
@@ -45,7 +47,7 @@ public class JoystickWidgets extends ViewPort {
         sensy = 4;
         retractDelay = 300;
         animSampler = 10;
-        animSpeed = 60;
+        animSpeed = 50;
         ox = movex;
         oy = movey;
 
@@ -58,6 +60,10 @@ public class JoystickWidgets extends ViewPort {
     public double getSensx() { return sensx; }
     public double getSensy() { return sensy; }
     public double getSens() { return getSensx(); }
+    public int getMask() { return displayMask; }
+
+    protected boolean isCoordinatesEnabled() { return (displayMask | 1) == 1; }
+    protected void enableCoordinates() { displayMask |= 1; }
 
     public boolean zero() {
         Point center = new Point(); middle(center);
@@ -173,7 +179,7 @@ public class JoystickWidgets extends ViewPort {
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.parseColor(colors.foreground));
         paint.setTextSize(60);
-        if(debugLevel > 0) {
+        if(isCoordinatesEnabled()) {
             mCanvas.drawText(String.format("U: %03d", pu), 40, 80, paint);
             mCanvas.drawText(String.format("V: %03d", pv), 40, 140, paint);
         }
@@ -194,6 +200,27 @@ public class JoystickWidgets extends ViewPort {
     public void xyScreen() {
         reset();
         crossHair(movex,movey);
+    }
+
+    public void truncate() {
+        Point crt = new Point();
+        Point cartesian = new Point();
+        toCartesian(movex, movey, cartesian);
+        if (radius(movex, movey) > radius()) {
+            fromCartesian(
+                    (int) round(radius() * cos(angle(movex, movey))),
+                    (int) round(radius() * sin(angle(movex, movey))),
+                    crt
+            );
+            if(cartesian.x >= 0) {
+                movex = crt.x;
+                movey = crt.y;
+            } else {
+                movex = x() - crt.x;
+                movey = y() - crt.y;
+            }
+
+        }
     }
 
     public void crossHair(int x, int y) {
