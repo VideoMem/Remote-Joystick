@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.MotionEvent;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,8 +21,9 @@ public class XYView extends JoystickWidgets {
     protected boolean ignoreUpdate;
     protected boolean ignoreMove;
 
-    public XYView(Context context, AppCompatActivity ref) {
-        super(context);
+    public XYView(Context context, AppCompatActivity ref, AppParameters p) {
+        super(context, p);
+        param = p;
         activity = ref;
         timer = new Timer();
         ignoreUpdate = false; retractTimer(500);
@@ -31,7 +33,6 @@ public class XYView extends JoystickWidgets {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-
         mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         mCanvas = new Canvas(mBitmap);
     }
@@ -40,6 +41,10 @@ public class XYView extends JoystickWidgets {
     protected void onDraw(Canvas canvas)
     {
         super.onDraw(canvas);
+ //       setMaxPower(param.getPower());
+  //      setSens(param.getSensitivity());
+   //     setRetractDelay();
+
         canvas.drawBitmap(mBitmap,0 ,0, mBitmapPaint);
         canvas.restore();
     }
@@ -122,9 +127,6 @@ public class XYView extends JoystickWidgets {
     public void SettingsView() {
         Intent intent = new Intent(activity, SettingsView.class);
         activity.startActivity(intent);
-
-        //activity.setContentView(R.layout.settings_activity);
-        //activity.startActivity(R.layout.settings_activity);
     }
 
     @Override

@@ -2,10 +2,13 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
     <ScrollView
+        android:id="@+id/autoFollow"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -28,8 +31,8 @@
                 style="@style/Widget.AppCompat.SeekBar"
                 android:layout_width="match_parent"
                 android:layout_height="34dp"
-                android:max="8"
-                android:progress="4" />
+                android:max="80"
+                android:progress="40" />
 
             <TextView
                 android:id="@+id/textView3"
@@ -44,6 +47,9 @@
                 android:id="@+id/power"
                 android:layout_width="match_parent"
                 android:layout_height="34dp"
+                android:clickable="true"
+                android:focusable="auto"
+                android:focusableInTouchMode="true"
                 android:indeterminate="false"
                 android:max="255"
                 android:progress="255" />
@@ -75,7 +81,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <SeekBar
-                android:id="@+id/retractDelay2"
+                android:id="@+id/retractSpeed"
                 android:layout_width="match_parent"
                 android:layout_height="34dp"
                 android:indeterminate="false"
@@ -107,7 +113,7 @@
                 android:verticalScrollbarPosition="defaultPosition" />
 
             <Switch
-                android:id="@+id/autoauto2"
+                android:id="@+id/showCoords"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -117,7 +123,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <Switch
-                android:id="@+id/autoauto3"
+                android:id="@+id/batMon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -127,7 +133,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <Switch
-                android:id="@+id/autoauto4"
+                android:id="@+id/soundFeed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -170,6 +176,20 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text=" Serial Monitor" />
+
+            <Button
+                android:id="@+id/defSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Default Settings" />
+
+            <Button
+                android:id="@+id/exitApp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Quit Application" />
 
             <FrameLayout
                 android:id="@+id/settings"

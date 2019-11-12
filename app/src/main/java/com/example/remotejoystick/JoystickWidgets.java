@@ -5,6 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.view.View;
+import android.widget.SeekBar;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
@@ -24,17 +26,12 @@ public class JoystickWidgets extends ViewPort {
     protected int animSampler;
     protected int animSpeed;
     protected Point screen;
-    protected int debugLevel;
     protected int maxPower;
-    protected int displayMask;
 
-    public JoystickWidgets(Context context)  {
-        super(context);
+    public JoystickWidgets(Context context, AppParameters p)  {
+        super(context, p);
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
         screen = new Point();
-        debugLevel = 1;
-        maxPower = 255;
-        displayMask = 0;
         reset();
     }
 
@@ -43,13 +40,13 @@ public class JoystickWidgets extends ViewPort {
         getSize(size);
         movex = size.x /2;
         movey = size.y /2;
-        sensx = 4;
-        sensy = 4;
-        retractDelay = 300;
-        animSampler = 10;
-        animSpeed = 50;
         ox = movex;
         oy = movey;
+        animSampler = 10;
+        setMaxPower(param.getPower());
+        setSens(param.getSensitivity());
+        setRetractDelay(param.getRetractDelay());
+        setRetractSpeed(param.getRetractSpeed());
 
     }
 
@@ -60,10 +57,10 @@ public class JoystickWidgets extends ViewPort {
     public double getSensx() { return sensx; }
     public double getSensy() { return sensy; }
     public double getSens() { return getSensx(); }
-    public int getMask() { return displayMask; }
-
-    protected boolean isCoordinatesEnabled() { return (displayMask | 1) == 1; }
-    protected void enableCoordinates() { displayMask |= 1; }
+    public void setRetractDelay(int del) { retractDelay = del; }
+    public int getRetractDelay() { return retractDelay; }
+    public void setRetractSpeed(int spd) { animSpeed = spd; }
+    public int getRetractSpeed() { return animSpeed; }
 
     public boolean zero() {
         Point center = new Point(); middle(center);
@@ -179,7 +176,7 @@ public class JoystickWidgets extends ViewPort {
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.parseColor(colors.foreground));
         paint.setTextSize(60);
-        if(isCoordinatesEnabled()) {
+        if(param.showCoordinates()) {
             mCanvas.drawText(String.format("U: %03d", pu), 40, 80, paint);
             mCanvas.drawText(String.format("V: %03d", pv), 40, 140, paint);
         }

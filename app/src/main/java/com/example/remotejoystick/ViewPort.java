@@ -10,7 +10,8 @@ import static java.lang.Math.round;
 import static java.lang.Math.sqrt;
 
 public class ViewPort extends View {
-    public ViewPort(Context context)  { super(context); }
+    public ViewPort(Context context, AppParameters p)  { super(context); param = p; }
+    protected AppParameters param;
 
     protected int x() {
         Point size = new Point();
@@ -54,10 +55,7 @@ public class ViewPort extends View {
     protected void rotate(int x, int y, double angle, Point res) {
         Point crt = new Point(); toCartesian(x, y, crt);
 
-        //normalize(vector); // No  need to normalize, vector is already ok...
-
         int u = (int)((double) crt.x * Math.cos(angle) - (double) crt.y * Math.sin(angle));
-
         int v = (int)((double) crt.x * Math.sin(angle) + (double) crt.y * Math.cos(angle));
 
         Point screen = new Point();
