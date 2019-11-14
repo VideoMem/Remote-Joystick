@@ -1,7 +1,6 @@
 package com.example.remotejoystick;
 
 import android.app.Application;
-import android.util.Log;
 
 public class AppParameters extends Application {
 
@@ -14,10 +13,11 @@ public class AppParameters extends Application {
 
     public void defaults() {
         setPower(255);
-        setSensitivity(4);
+        setSensitivity(2);
         setRetractDelay(300);
         setRetractSpeed(50);
         setCoordVisible(true);
+        setSound(false);
     }
 
     public AppParameters() {

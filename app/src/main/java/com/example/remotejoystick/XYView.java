@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.util.Log;
+import android.os.Handler;
 import android.view.MotionEvent;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +12,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.round;
 
 
 public class XYView extends JoystickWidgets {
@@ -20,6 +21,10 @@ public class XYView extends JoystickWidgets {
     Timer timer;
     protected boolean ignoreUpdate;
     protected boolean ignoreMove;
+    protected static SoundSynth audio;
+    Handler handler;
+    protected boolean sound;
+    protected boolean onSound() { return sound; }
 
     public XYView(Context context, AppCompatActivity ref, AppParameters p) {
         super(context, p);
@@ -28,6 +33,9 @@ public class XYView extends JoystickWidgets {
         timer = new Timer();
         ignoreUpdate = false; retractTimer(500);
         ignoreMove = false;
+        handler = new Handler();
+        audio = new SoundSynth(this);
+        sound = false;
     }
 
     @Override
@@ -41,12 +49,28 @@ public class XYView extends JoystickWidgets {
     protected void onDraw(Canvas canvas)
     {
         super.onDraw(canvas);
- //       setMaxPower(param.getPower());
-  //      setSens(param.getSensitivity());
-   //     setRetractDelay();
-
         canvas.drawBitmap(mBitmap,0 ,0, mBitmapPaint);
         canvas.restore();
+    }
+
+    protected  void audioSend(int delay) {
+        final Runnable runnableUpdate = new Runnable() {
+            public void run() {
+                    if (param.getSound() & sound) {
+                        int fx = 50 + abs(round(uPow() * 60 / param.getPower()));
+                        int fy = 50 + abs(round(vPow() * 60 / param.getPower()));
+                        audio.play(fx, fy);
+                        audioSend(audio.buferMS()/2);
+                    }
+            }
+        };
+
+        TimerTask task = new TimerTask(){
+            public void run() {
+                activity.runOnUiThread(runnableUpdate);
+            }
+        };
+        timer.schedule(task, delay);
     }
 
     protected void retractTimer(int delay) {
@@ -64,8 +88,6 @@ public class XYView extends JoystickWidgets {
                 activity.runOnUiThread(runnableUpdate);
             }
         };
-
-
         timer.schedule(task, delay);
     }
 
@@ -73,9 +95,7 @@ public class XYView extends JoystickWidgets {
         final Runnable runnableUpdate = new Runnable() {
             public void run() {
                 if(!ignoreUpdate) {
-
-                    //if(radius(movex,movey) > radius()) movex = screen.x; movey = screen.y;
-
+                    Point center = new Point(); middle(center);
                     Point crt  = new Point(); toCartesian(movex, movey, crt);
 
                     if(abs(crt.x) > animSpeed || abs(crt.y) > animSpeed) {
@@ -98,6 +118,7 @@ public class XYView extends JoystickWidgets {
                         movey = screen.y;
                     }
                     crossHair(movex, movey);
+                    if(movex == center.x && movey == center.y) sound = false;
                     invalidate();
                 }
             }
@@ -108,15 +129,13 @@ public class XYView extends JoystickWidgets {
                 activity.runOnUiThread(runnableUpdate);
             }
         };
-
-
         timer.schedule(task, delay);
     }
 
     public boolean options(int x, int y) {
         Point size = new Point();
         getSize(size);
-        if(  x > (size.x - sizer(Sizes.small))
+        if(x > (size.x - sizer(Sizes.small))
          && (y < sizer(Sizes.small)) && zero()) {
             return true;
         } else{
@@ -141,6 +160,8 @@ public class XYView extends JoystickWidgets {
                     ox = x;
                     oy = y;
                     ignoreMove = false;
+                    sound = true;
+                    audioSend(audio.buferMS());
                 } else {
                     ignoreMove = true;
                     drawOptionB();
@@ -148,17 +169,21 @@ public class XYView extends JoystickWidgets {
                 break;
             case MotionEvent.ACTION_MOVE:
                 ignoreUpdate = true;
-                if(!ignoreMove)
+                if(!ignoreMove) {
                     rubberCtrl(x, y);
-                invalidate();
+                    invalidate();
+                }
                 break;
             case MotionEvent.ACTION_UP:
                 ignoreUpdate = false;
                 if(options(x,y)) {
                     SettingsView();
+                } else {
+                    truncate();
+                    animTimer(retractDelay);
                 }
-                truncate();
-                animTimer(retractDelay);
+                break;
+            default:
                 break;
         }
         return true;

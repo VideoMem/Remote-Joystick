@@ -143,8 +143,7 @@ public class SettingsView extends AppCompatActivity
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                int pid = android.os.Process.myPid();
-                android.os.Process.killProcess(pid);
+                finishAffinity();
                 dialog.dismiss();
             }
         });
