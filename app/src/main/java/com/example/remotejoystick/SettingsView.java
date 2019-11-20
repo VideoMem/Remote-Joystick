@@ -143,7 +143,8 @@ public class SettingsView extends AppCompatActivity
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                finishAffinity();
+                //finishAffinity();
+                System.exit(0);
                 dialog.dismiss();
             }
         });
