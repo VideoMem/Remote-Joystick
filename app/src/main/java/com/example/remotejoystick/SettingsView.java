@@ -166,7 +166,7 @@ public class SettingsView extends AppCompatActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button:
-                Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, ListBTDevices.class);
                 this.startActivity(intent);
                 break;
             case R.id.defSettings:

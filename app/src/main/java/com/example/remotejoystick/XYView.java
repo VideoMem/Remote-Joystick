@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.os.Handler;
 import android.view.MotionEvent;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,12 +16,11 @@ import static java.lang.Math.round;
 
 public class XYView extends JoystickWidgets {
     protected Pallete colors;
-    AppCompatActivity activity;
-    Timer timer;
+    protected AppCompatActivity activity;
+    protected Timer timer;
     protected boolean ignoreUpdate;
     protected boolean ignoreMove;
     protected static SoundSynth audio;
-    Handler handler;
     protected boolean sound;
     protected boolean onSound() { return sound; }
 
@@ -33,8 +31,9 @@ public class XYView extends JoystickWidgets {
         timer = new Timer();
         ignoreUpdate = false; retractTimer(500);
         ignoreMove = false;
-        handler = new Handler();
+       // handler = new Handler();
         audio = new SoundSynth(this);
+        audio.mute(false);
         sound = false;
     }
 
@@ -53,24 +52,13 @@ public class XYView extends JoystickWidgets {
         canvas.restore();
     }
 
-    protected  void audioSend(int delay) {
-        final Runnable runnableUpdate = new Runnable() {
-            public void run() {
-                    if (param.getSound() & sound) {
-                        int fx = 50 + abs(round(uPow() * 60 / param.getPower()));
-                        int fy = 50 + abs(round(vPow() * 60 / param.getPower()));
-                        audio.play(fx, fy);
-                        audioSend(audio.buferMS()/2);
-                    }
-            }
-        };
-
-        TimerTask task = new TimerTask(){
-            public void run() {
-                activity.runOnUiThread(runnableUpdate);
-            }
-        };
-        timer.schedule(task, delay);
+    protected  void audioSend() {
+        int fx = 30 + abs(round(uPow() * 80 / param.getPower()));
+        int fy = 30 + abs(round(vPow() * 80 / param.getPower()));
+        if(param.getSound()) {
+            audio.play(fx, fy);
+            audio.push(param.soundBuffer);
+        }
     }
 
     protected void retractTimer(int delay) {
@@ -118,7 +106,11 @@ public class XYView extends JoystickWidgets {
                         movey = screen.y;
                     }
                     crossHair(movex, movey);
-                    if(movex == center.x && movey == center.y) sound = false;
+                    if(movex == center.x && movey == center.y) {
+                        param.soundBuffer.mute(true);
+                    }
+
+                    audioSend();
                     invalidate();
                 }
             }
@@ -160,8 +152,8 @@ public class XYView extends JoystickWidgets {
                     ox = x;
                     oy = y;
                     ignoreMove = false;
-                    sound = true;
-                    audioSend(audio.buferMS());
+                    param.soundBuffer.mute(!param.getSound());
+                    audioSend();
                 } else {
                     ignoreMove = true;
                     drawOptionB();
@@ -172,6 +164,7 @@ public class XYView extends JoystickWidgets {
                 if(!ignoreMove) {
                     rubberCtrl(x, y);
                     invalidate();
+                    audioSend();
                 }
                 break;
             case MotionEvent.ACTION_UP:

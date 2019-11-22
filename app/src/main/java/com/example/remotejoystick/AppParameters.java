@@ -1,6 +1,11 @@
 package com.example.remotejoystick;
 
 import android.app.Application;
+import android.media.AudioTrack;
+import android.util.Log;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class AppParameters extends Application {
 
@@ -10,6 +15,12 @@ public class AppParameters extends Application {
     protected int retractSpeed;
     protected boolean coordVisible;
     protected boolean sound;
+    public volatile SoundBuffer soundBuffer;
+    //public volatile AudioTrack mTrack;
+    protected Timer timer;
+
+
+
 
     public void defaults() {
         setPower(255);
@@ -21,6 +32,7 @@ public class AppParameters extends Application {
     }
 
     public AppParameters() {
+        soundBuffer = new SoundBuffer();
         defaults();
     }
 
