@@ -1,9 +1,8 @@
 package com.example.remotejoystick;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -12,6 +11,7 @@ public class MainActivity extends AppCompatActivity {
     protected Timer timer;
     protected volatile AppParameters params;
     protected static AudioPlayer player;
+    protected static BTConnManager btman;
 
     protected void soundTimer() {
         final Runnable runnableUpdate = new Runnable() {
@@ -40,12 +40,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //vola AppParameters params;
         params = ((AppParameters) this.getApplication()).self();
+        Intent newint = getIntent();
+        params.setAddress(newint.getStringExtra(ListBTDevices.EXTRA_ADDRESS));
+        params.setName(newint.getStringExtra("NAME"));
         xy = new XYView(this, this, params);
         setContentView(xy);
+        xy.refreshTimer(100);
         player = new AudioPlayer();
         player.setup(params.soundBuffer);
+        if(btman != null) btman.kill();
+        btman = new BTConnManager(params);
+        if(params.name != null) {
+            btman.connect();
+            btman.start();
+        }
         //timer = new Timer();
         //soundTimer();
         //player.start();

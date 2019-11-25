@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.MotionEvent;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static android.content.ContentValues.TAG;
 import static java.lang.Math.abs;
 import static java.lang.Math.round;
 
@@ -31,7 +33,6 @@ public class XYView extends JoystickWidgets {
         timer = new Timer();
         ignoreUpdate = false; retractTimer(500);
         ignoreMove = false;
-       // handler = new Handler();
         audio = new SoundSynth(this);
         audio.mute(false);
         sound = false;
@@ -61,6 +62,13 @@ public class XYView extends JoystickWidgets {
         }
     }
 
+    protected synchronized void command() {
+        if(param.sendStream.size() < param.getTxBuffSize())
+            param.sendStream.add(String.format("U%dV%d", uPow(), vPow()));
+        //else
+        //    Log.d(TAG, "Send buffer Stream Full");
+    }
+
     protected void retractTimer(int delay) {
         final Runnable runnableUpdate = new Runnable() {
             public void run() {
@@ -78,6 +86,27 @@ public class XYView extends JoystickWidgets {
         };
         timer.schedule(task, delay);
     }
+
+
+    public void refreshTimer(int delay) {
+        final Runnable runnableUpdate = new Runnable() {
+            public void run() {
+                if(param.showCoordinates()) {
+                    crossHair(movex, movey);
+                    invalidate();
+                    refreshTimer(300);
+                }
+            }
+        };
+
+        TimerTask task = new TimerTask(){
+            public void run() {
+                activity.runOnUiThread(runnableUpdate);
+            }
+        };
+        timer.schedule(task, delay);
+    }
+
 
     protected void animTimer(int delay) {
         final Runnable runnableUpdate = new Runnable() {
@@ -111,6 +140,7 @@ public class XYView extends JoystickWidgets {
                     }
 
                     audioSend();
+                    command();
                     invalidate();
                 }
             }
@@ -144,6 +174,8 @@ public class XYView extends JoystickWidgets {
     public boolean onTouchEvent(MotionEvent ev) {
         int x = (int)ev.getX();
         int y = (int)ev.getY();
+
+        if(ox != x || oy != y) command();
 
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:

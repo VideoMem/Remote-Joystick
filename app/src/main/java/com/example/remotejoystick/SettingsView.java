@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -94,6 +95,11 @@ public class SettingsView extends AppCompatActivity
         soundEnable = findViewById(R.id.soundFeed);
         soundEnable.setOnCheckedChangeListener(this);
         read();
+        TextView Device = findViewById(R.id.DevConfig);
+        if(param.name != null)
+            Device.setText(String.format("Device %s\n%s", param.name, param.address));
+        else
+            Device.setText("Device not selected");
     }
 
     protected void read() {

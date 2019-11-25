@@ -16,7 +16,7 @@ import static java.lang.Math.sin;
 
 public class JoystickWidgets extends ViewPort {
     protected Pallete colors;
-    protected Canvas  mCanvas;
+    protected static Canvas  mCanvas;
     protected Bitmap  mBitmap;
     protected Paint   mBitmapPaint;
     protected int ox, oy;
@@ -31,7 +31,9 @@ public class JoystickWidgets extends ViewPort {
     public JoystickWidgets(Context context, AppParameters p)  {
         super(context, p);
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
+        mCanvas = new Canvas();
         screen = new Point();
+        //mBitmap = new Bitmap();
         reset();
     }
 
@@ -180,6 +182,24 @@ public class JoystickWidgets extends ViewPort {
             mCanvas.drawText(String.format("U: %03d", pu), 40, 80, paint);
             mCanvas.drawText(String.format("V: %03d", pv), 40, 140, paint);
         }
+        paint.setTextSize(30);
+        if(param.getBtStatus()) {
+            int signal = 100 - (100 * param.sendStream.size() / param.getTxBuffSize());
+            mCanvas.drawText(
+                    String.format("%s connected (txq: %d)", param.getName(), signal),
+                    40,
+                    y() - 80,
+                    paint
+            );
+            mCanvas.drawText(
+                    String.format("BAT: %02.02fV", param.voltage),
+                    40,
+                    y() - 40,
+                    paint
+            );
+
+        } else
+            mCanvas.drawText("No device connected", 40, y() -80, paint);
     }
 
     public void rubberCtrl(int x, int y) {

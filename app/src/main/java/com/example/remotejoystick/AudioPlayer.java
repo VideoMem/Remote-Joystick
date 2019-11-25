@@ -52,7 +52,7 @@ public class AudioPlayer extends Thread {
         }
     }
 
-
+    @Override
     public void run() {
         while(!kill)
             play();
