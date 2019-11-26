@@ -33,7 +33,7 @@ public class XYView extends JoystickWidgets {
         timer = new Timer();
         ignoreUpdate = false; retractTimer(500);
         ignoreMove = false;
-        audio = new SoundSynth(this);
+        audio = new SoundSynth(this, param);
         audio.mute(false);
         sound = false;
     }

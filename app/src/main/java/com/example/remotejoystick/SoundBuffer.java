@@ -1,10 +1,5 @@
 package com.example.remotejoystick;
-
-import android.media.AudioFormat;
-import android.media.AudioTrack;
 import android.util.Log;
-
-import java.lang.reflect.Array;
 import java.util.LinkedList;
 import java.util.Deque;
 
@@ -28,6 +23,7 @@ public class SoundBuffer {
     SoundBuffer() {
         //init();
     }
+    public short[] getSilence() { return  silence; }
 
     public void init(int size, int samplerate) {
         mute(false);
@@ -39,7 +35,6 @@ public class SoundBuffer {
         qSound  = new LinkedList<>();
         last = silence.clone();
         read = new short[buffsize*margin];
-        //write(silence);
     }
 
     //public void setSize(int size) { actualSize = size; }
@@ -55,7 +50,6 @@ public class SoundBuffer {
             if(!mute) {
                 for (int i = 0; i < s.length; ++i) {
                     qSound.add(s[i]);
-
                 }
             } else {
                 for (int i = 0; i < buffsize; ++i) {
@@ -78,10 +72,10 @@ public class SoundBuffer {
     public synchronized int size() {
         int end;
         try {
-            end = qSound.toArray().length;
+            end = qSound.size();
         } catch (Exception e) {
             e.printStackTrace();
-            Log.d("qSound", String.valueOf(qSound.size()));
+            //Log.d("qSound", String.valueOf(qSound.size()));
             end = -1;
         }
         return end;
@@ -90,7 +84,7 @@ public class SoundBuffer {
     public synchronized short[] read() {
         int end = size();
         int p =0,i=0;
-        while (i < end) {
+        while (i < buffsize && qSound.size() > 0) {
             try {
                 read[i] = qSound.remove();
                 if(i > 0 && read[i] > 0 && read[i -1] <= 0) p = i;

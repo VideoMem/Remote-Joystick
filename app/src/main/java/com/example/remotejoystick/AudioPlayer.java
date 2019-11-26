@@ -9,8 +9,8 @@ import android.util.Log;
 import static android.content.ContentValues.TAG;
 
 public class AudioPlayer extends Thread {
-    protected static SoundBuffer mBuffer;
-    protected AudioTrack mAudio;
+    protected volatile SoundBuffer mBuffer;
+    protected static AudioTrack mAudio;
     protected boolean kill;
     protected int frame;
     protected int SAMPLERATE = 44100;
@@ -34,19 +34,29 @@ public class AudioPlayer extends Thread {
                 buffsize,
                 AudioTrack.MODE_STREAM
         );
+        mAudio.stop();
         mBuffer.init(buffsize, SAMPLERATE);
+
+
+        try {
+            mAudio.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         kill = false;
     }
 
     protected void play() {
         try {
             mAudio.play();
-            ++frame;
             mAudio.write(mBuffer.read(), 0, mBuffer.getReadSize());
+            ++frame;
         } catch (Exception e) {
             //setup(mBuffer);
             Log.d(TAG, "Audio Thread Exception");
             Log.d(TAG, String.format("Frame ID: %d", frame));
+            Log.d(TAG, String.valueOf(mBuffer.size()));
             e.printStackTrace();
             //kill= true;
         }
@@ -56,6 +66,7 @@ public class AudioPlayer extends Thread {
     public void run() {
         while(!kill)
             play();
+        Log.d(TAG, "Audio thread ended");
     }
 
 }

@@ -5,6 +5,8 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.Handler;
 import android.os.Process;
+
+import static com.example.remotejoystick.MainActivity.xy;
 import static java.lang.Math.PI;
 import static java.lang.Math.round;
 import static java.lang.Math.sin;
@@ -14,18 +16,18 @@ public class SoundSynth  {
 
     protected short[] mSound;
     protected static XYView ref;
-    protected SoundBuffer mBuffer;
+    protected volatile SoundBuffer mBuffer;
 
     public void mute(boolean m) { mBuffer.mute(m); }
 
     protected void init() {
-        mBuffer = new SoundBuffer();
-        mSound = new short[mBuffer.getBuffsize() * 2];
+        mSound = new short[8192 * 2];
     }
 
-    public SoundSynth(XYView xy) {
-        init();
+    public SoundSynth(XYView xy, AppParameters param) {
         ref = xy;
+        mBuffer = param.soundBuffer;
+        init();
     }
 
     protected double omega(int freq) {

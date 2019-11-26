@@ -6,13 +6,9 @@ import android.bluetooth.BluetoothSocket;
 import android.os.AsyncTask;
 import android.os.Process;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.UUID;
 
 import static android.content.ContentValues.TAG;
@@ -78,7 +74,7 @@ public class BTConnManager extends Thread {
                 int size = msg.length() + 1;
                 byte[] sendArr = new byte[size];
                 arraycopy(msg.getBytes(), 0, sendArr, 0, msg.length());
-                sendArr[msg.length()] = 13;
+                sendArr[msg.length()] = 13; //adds enter
                 if(btSocket.isConnected())
                     btSocket.getOutputStream().write(sendArr);
                 else

@@ -19,14 +19,15 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("Advice", "Param run");
                 if (params.getSound()) {
                     try {
-                        player.setup(params.soundBuffer);
-                        player.run();
+                        //player.setup(params.soundBuffer);
+                        player.start();
                     }  catch (Exception e) {
                         Log.d("MSG", "Thread already running");
                     }
+                    soundTimer();
                 } else
                     player.end();
-                soundTimer();
+
             }
         };
         TimerTask task = new TimerTask(){
@@ -44,20 +45,24 @@ public class MainActivity extends AppCompatActivity {
         Intent newint = getIntent();
         params.setAddress(newint.getStringExtra(ListBTDevices.EXTRA_ADDRESS));
         params.setName(newint.getStringExtra("NAME"));
+
         xy = new XYView(this, this, params);
         setContentView(xy);
         xy.refreshTimer(100);
-        player = new AudioPlayer();
-        player.setup(params.soundBuffer);
+
         if(btman != null) btman.kill();
         btman = new BTConnManager(params);
         if(params.name != null) {
             btman.connect();
             btman.start();
         }
+
+        if(player != null) player.end();
+        player = new AudioPlayer();
+        player.setup(params.soundBuffer);
+        player.start();
         //timer = new Timer();
         //soundTimer();
-        //player.start();
     }
 
     @Override
