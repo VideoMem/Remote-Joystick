@@ -21,12 +21,13 @@ public class SoundSynth  {
     public void mute(boolean m) { mBuffer.mute(m); }
 
     protected void init() {
-        mSound = new short[8192 * 2];
+        mSound = new short[mBuffer.getBuffsize() * 2];
     }
 
     public SoundSynth(XYView xy, AppParameters param) {
         ref = xy;
-        mBuffer = param.soundBuffer;
+        mBuffer = new SoundBuffer(); //param.soundBuffer;
+        mBuffer.init(param.soundBuffer.getBuffsize(), param.soundBuffer.getSAMPLERATE());
         init();
     }
 

@@ -1,5 +1,8 @@
 package com.example.remotejoystick;
 import android.util.Log;
+
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Deque;
 
@@ -20,9 +23,6 @@ public class SoundBuffer {
     public int getBuffsize() { return  buffsize; }
     public int getReadSize() { return  readSize; }
 
-    SoundBuffer() {
-        //init();
-    }
     public short[] getSilence() { return  silence; }
 
     public void init(int size, int samplerate) {
@@ -43,9 +43,7 @@ public class SoundBuffer {
     public synchronized void write(short[] s) {
         last = s.clone();
         int qSize = size();
-        int j, p = 0;
-        //Log.d(TAG, "Write");
-        //actualSize = qSize;
+
         if(qSize < depth) {
             if(!mute) {
                 for (int i = 0; i < s.length; ++i) {
@@ -75,7 +73,6 @@ public class SoundBuffer {
             end = qSound.size();
         } catch (Exception e) {
             e.printStackTrace();
-            //Log.d("qSound", String.valueOf(qSound.size()));
             end = -1;
         }
         return end;
@@ -84,7 +81,8 @@ public class SoundBuffer {
     public synchronized short[] read() {
         int end = size();
         int p =0,i=0;
-        while (i < buffsize && qSound.size() > 0) {
+        Iterator iterator = qSound.iterator();
+        while (iterator.hasNext()) {
             try {
                 read[i] = qSound.remove();
                 if(i > 0 && read[i] > 0 && read[i -1] <= 0) p = i;
@@ -97,10 +95,6 @@ public class SoundBuffer {
         }
 
         readSize = p;
-        //while(i < end) {
-        //    qSound.remove();
-        //    ++i;
-        //}
 
         if (!mute) {
             if(i > 0) return read;
