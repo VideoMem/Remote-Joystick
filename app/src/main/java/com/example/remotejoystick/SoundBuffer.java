@@ -17,7 +17,7 @@ public class SoundBuffer {
     protected int     SAMPLERATE;
     protected volatile Deque<Short> qSound;
     protected final int margin = 2;
-    protected final int depth = 30;
+    protected final int depth = 10;
     protected short[] read;
     public int getSAMPLERATE() { return  SAMPLERATE; }
     public int getBuffsize() { return  buffsize; }

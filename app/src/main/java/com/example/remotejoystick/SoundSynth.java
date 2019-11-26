@@ -16,7 +16,7 @@ public class SoundSynth  {
 
     protected short[] mSound;
     protected static XYView ref;
-    protected volatile SoundBuffer mBuffer;
+    protected static SoundBuffer mBuffer;
 
     public void mute(boolean m) { mBuffer.mute(m); }
 
@@ -26,7 +26,7 @@ public class SoundSynth  {
 
     public SoundSynth(XYView xy, AppParameters param) {
         ref = xy;
-        mBuffer = new SoundBuffer(); //param.soundBuffer;
+        mBuffer = new SoundBuffer();
         mBuffer.init(param.soundBuffer.getBuffsize(), param.soundBuffer.getSAMPLERATE());
         init();
     }

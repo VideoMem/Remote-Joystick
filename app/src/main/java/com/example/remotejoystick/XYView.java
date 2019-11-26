@@ -1,17 +1,12 @@
 package com.example.remotejoystick;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.util.Log;
 import android.view.MotionEvent;
 import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static android.content.ContentValues.TAG;
 import static java.lang.Math.abs;
 import static java.lang.Math.round;
 
@@ -23,8 +18,7 @@ public class XYView extends JoystickWidgets {
     protected boolean ignoreUpdate;
     protected boolean ignoreMove;
     protected static SoundSynth audio;
-    protected boolean sound;
-    protected boolean onSound() { return sound; }
+    protected boolean stopRetraction;
 
     public XYView(Context context, AppCompatActivity ref, AppParameters p) {
         super(context, p);
@@ -35,7 +29,7 @@ public class XYView extends JoystickWidgets {
         ignoreMove = false;
         audio = new SoundSynth(this, param);
         audio.mute(false);
-        sound = false;
+        stopRetraction = true;
     }
 
     @Override
@@ -65,8 +59,6 @@ public class XYView extends JoystickWidgets {
     protected synchronized void command() {
         if(param.sendStream.size() < param.getTxBuffSize())
             param.sendStream.add(String.format("U%dV%d", uPow(), vPow()));
-        //else
-        //    Log.d(TAG, "Send buffer Stream Full");
     }
 
     protected void retractTimer(int delay) {
@@ -92,9 +84,9 @@ public class XYView extends JoystickWidgets {
         final Runnable runnableUpdate = new Runnable() {
             public void run() {
                 if(param.showCoordinates()) {
-                    crossHair(movex, movey);
-                    invalidate();
-                    refreshTimer(300);
+                    //crossHair(movex, movey);
+                    //invalidate();
+                    //refreshTimer(300);
                 }
             }
         };
@@ -128,7 +120,7 @@ public class XYView extends JoystickWidgets {
                             else
                                 movey -= animSpeed;
                         }
-                        animTimer(animSampler);
+                        if(!stopRetraction) animTimer(animSampler);
                     } else {
                         Point screen = new Point(); fromCartesian(0,0, screen);
                         movex = screen.x;
@@ -177,6 +169,8 @@ public class XYView extends JoystickWidgets {
 
         if(ox != x || oy != y) command();
 
+        stopRetraction = true;
+
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 ignoreUpdate = true;
@@ -205,6 +199,7 @@ public class XYView extends JoystickWidgets {
                     SettingsView();
                 } else {
                     truncate();
+                    stopRetraction = false;
                     animTimer(retractDelay);
                 }
                 break;
