@@ -49,9 +49,12 @@ public class AudioPlayer extends Thread {
 
     protected void play() {
         try {
-            mAudio.play();
-            mAudio.write(mBuffer.read(), 0, mBuffer.getReadSize());
-            ++frame;
+            short[] read = mBuffer.read();
+            if(mBuffer.getReadSize() > 0) {
+                mAudio.play();
+                mAudio.write(read, 0, mBuffer.getReadSize());
+                ++frame;
+            }
         } catch (Exception e) {
             //setup(mBuffer);
             Log.d(TAG, "Audio Thread Exception");

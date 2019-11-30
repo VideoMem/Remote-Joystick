@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Joystick Remoto</string>
+    <string name="BT_no_bt_device">No hay dispositivo Bluetooth</string>
+    <string name="BT_no_paired">No hay dispositivos Bluetooth apareados</string>
+    <string name="BT_not_available">No hay adaptador Bluetooth en este dispositivo</string>
+    <string name="JW_BatteryVoltage">BAT: %02.02fV</string>
+    <string name="JW_connected">%s conectado (txq: %d)</string>
+    <string name="JW_no_device">Dispositivo desconectado</string>
+    <string name="SET_Advanced_settings">Configuración avanzada</string>
+    <string name="SET_Automata_Behaviour">Comportamiento autómata</string>
+    <string name="SET_Automatic_line_follower">Seguidor de línea automático</string>
+    <string name="SET_Default_Settings">Configuración predeterminada</string>
+    <string name="SET_Quit_Application">Salir de la aplicación</string>
+    <string name="SET_Serial_Monitor">Monitor Serial</string>
+    <string name="SET_Show_coord">Ver coordenadas</string>
+    <string name="SET_caterpillar">Modo oruga</string>
+    <string name="SET_device">Dispositivo</string>
+    <string name="SET_device_fmt">Dispositivo %s         %s</string>
+    <string name="SET_exit_conf">Confirmar salir</string>
+    <string name="SET_exit_question">Está seguro?</string>
+    <string name="SET_joystick_sensitivity">Sensibilidad del joystick</string>
+    <string name="SET_motor_limit">Límite de potencia del motor</string>
+    <string name="SET_no">NO</string>
+    <string name="SET_no_device">Ningún dispositivo seleccionado</string>
+    <string name="SET_param_question">Está seguro?</string>
+    <string name="SET_param_reset_conf">Confirmar reset de parámetros</string>
+    <string name="SET_retract_delay">Retardo de retorno</string>
+    <string name="SET_retract_speed">Velocidad de retorno</string>
+    <string name="SET_select_device">Seleccione dispositivo</string>
+    <string name="SET_sound">Sonido</string>
+    <string name="SET_yes">SI</string>
+    <string name="title_activity_settings">Configuración</string>
+    <string name="title_activity_main">Control XY</string>
+    <string name="BT_connecting_to">Conectando con %s en %s</string>
+    <string name="JW_forward">A</string>
+    <string name="JW_backward">R</string>
+    <string name="JW_left">I</string>
+    <string name="JW_right">D</string>
+</resources>

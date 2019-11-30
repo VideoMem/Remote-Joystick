@@ -1,13 +1,7 @@
 package com.example.remotejoystick;
-
 import android.app.Application;
-import android.media.AudioTrack;
-import android.util.Log;
-
-import java.util.Deque;
 import java.util.LinkedList;
-import java.util.Timer;
-import java.util.TimerTask;
+
 
 public class AppParameters extends Application {
 
@@ -24,6 +18,7 @@ public class AppParameters extends Application {
     public volatile boolean btStatus;
     protected int txBuffSize;
     public volatile double voltage;
+    protected boolean caterpillar;
 
     public void clearSend() { while (sendStream.size() > 0) sendStream.remove(); }
     public void setBtStatus(boolean state) { btStatus = state; }
@@ -39,6 +34,7 @@ public class AppParameters extends Application {
         setCoordVisible(true);
         setSound(false);
         setTxBuffSize(32);
+        setCaterpillar(true);
     }
 
     public AppParameters() {
@@ -52,10 +48,10 @@ public class AppParameters extends Application {
     public int getPower() { return power; }
     public double getSensitivity() { return sensitivity; }
     public void setPower(int p) { power = p; }
-    public void setSensitivity(double v) { sensitivity = v; }
+    public void setSensitivity(double v) { sensitivity = v > 0? v : 0.1; }
     public void setRetractDelay(int del) { retractDelay = del; }
     public int getRetractDelay() { return retractDelay; }
-    public void setRetractSpeed(int spd) { retractSpeed = spd; }
+    public void setRetractSpeed(int spd) { retractSpeed = spd > 0? spd: 1; }
     public int getRetractSpeed() { return retractSpeed; }
     public boolean showCoordinates() { return coordVisible; }
     public void setCoordVisible(boolean v) { coordVisible = v; }
@@ -65,5 +61,7 @@ public class AppParameters extends Application {
     public String getAddress() { return address; }
     public void setName(String n) { name = n; }
     public String getName() { return name; }
+    public void setCaterpillar(boolean c) { caterpillar = c; }
+    public boolean getCaterpillar() { return caterpillar; }
 
 }

@@ -1,8 +1,5 @@
 package com.example.remotejoystick;
-import android.content.res.Resources;
 import android.util.Log;
-
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Deque;
@@ -18,27 +15,27 @@ public class SoundBuffer {
     protected int     SAMPLERATE;
     protected volatile Deque<Short> qSound;
     protected final int margin = 2;
-    protected final int depth = 10;
+    protected final int depth = 1;
     protected short[] read;
+
     public int getSAMPLERATE() { return  SAMPLERATE; }
     public int getBuffsize() { return  buffsize; }
     public int getReadSize() { return  readSize; }
 
     public short[] getSilence() { return  silence; }
 
+    public SoundBuffer() { }
+
     public void init(int size, int samplerate) {
         mute(false);
         SAMPLERATE = samplerate;
         buffsize = size;
-        //actualSize = buffsize;
         silence = new short[buffsize];
-        //last    = new short[buffsize];
         qSound  = new LinkedList<>();
         last = silence.clone();
         read = new short[buffsize*margin];
     }
 
-    //public void setSize(int size) { actualSize = size; }
     public void mute(boolean f) { mute = f; }
 
     public synchronized void write(short[] s) {
@@ -56,7 +53,7 @@ public class SoundBuffer {
                 }
             }
         } else {
-            Log.d(TAG,  Resources.getSystem().getString(R.string.soundbuffer_overflow_log));
+            Log.d(TAG,  "SoundBuffer write overflow");
         }
 
     }
@@ -75,6 +72,7 @@ public class SoundBuffer {
     public synchronized short[] read() {
         int end = size();
         int p =0,i=0;
+
         Iterator iterator = qSound.iterator();
         while (iterator.hasNext()) {
             try {
@@ -83,7 +81,11 @@ public class SoundBuffer {
                 ++i;
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.d("Remove exception", String.format("end %d, i %d, b: %b", end, i, qSound.isEmpty()));
+                Log.d("SNDB remove exception",
+                        String.format(
+                                "end: %d, i: %d, b: %b",
+                                end, i, qSound.isEmpty())
+                );
                 break;
             }
         }
@@ -98,5 +100,4 @@ public class SoundBuffer {
         return silence;
     }
 
-    //public int size() { return actualSize; }
 }

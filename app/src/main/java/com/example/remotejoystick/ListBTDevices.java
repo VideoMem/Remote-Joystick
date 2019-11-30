@@ -10,21 +10,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Set;
 
 public class ListBTDevices extends AppCompatActivity implements MyRecyclerViewAdapter.ItemClickListener {
-    //Button btnPaired;
     RecyclerView devicelist;
-    //ListView devicelist;
 
     private BluetoothAdapter myBluetooth = null;
     private Set<BluetoothDevice> pairedDevices;
@@ -39,17 +31,17 @@ public class ListBTDevices extends AppCompatActivity implements MyRecyclerViewAd
         setContentView(R.layout.activity_list_btdevices);
         myBluetooth = BluetoothAdapter.getDefaultAdapter();
         if ( myBluetooth==null ) {
-            Toast.makeText(getApplicationContext(), "Bluetooth device not available", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),
+                    this.getString(R.string.BT_no_bt_device),
+                    Toast.LENGTH_LONG).show();
             finish();
         } else if ( !myBluetooth.isEnabled() ) {
             Intent turnBTon = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(turnBTon, 1);
         }
         devicelist = findViewById(R.id.devices);
-        //RecyclerView recyclerView = findViewById(R.id.devices);
         devicelist.setLayoutManager(new LinearLayoutManager(this));
 
-        //final MyRecyclerViewAdapter
         adapter = new MyRecyclerViewAdapter(this, list);
         devicelist.setAdapter(adapter);
 
@@ -58,20 +50,24 @@ public class ListBTDevices extends AppCompatActivity implements MyRecyclerViewAd
     }
 
     private void pairedDevicesList () {
-        pairedDevices = myBluetooth.getBondedDevices();
+        try {
+            pairedDevices = myBluetooth.getBondedDevices();
 
-        if ( pairedDevices.size() > 0 ) {
-            for ( BluetoothDevice bt : pairedDevices ) {
-                list.add(bt.getName().trim() + "\n" + bt.getAddress().trim());
-                Log.d("List",bt.getName().trim() + "\n" + bt.getAddress().trim());
+            if ( pairedDevices.size() > 0 ) {
+                for ( BluetoothDevice bt : pairedDevices ) {
+                    list.add(bt.getName().trim() + "\n" + bt.getAddress().trim());
+                    Log.d("List",bt.getName().trim() + "\n" + bt.getAddress().trim());
+                }
+            } else {
+                Toast.makeText(getApplicationContext(),
+                        this.getString(R.string.BT_no_paired), Toast.LENGTH_LONG).show();
             }
-        } else {
-            Toast.makeText(getApplicationContext(), "No Paired Bluetooth Devices Found.", Toast.LENGTH_LONG).show();
+
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(),
+                    this.getString(R.string.BT_not_available), Toast.LENGTH_LONG).show();
         }
 
-
-        //adapter.notifyItemInserted(list);
-        //devicelist.setOnItemClickListener(myListClickListener);
     }
 
     @Override
@@ -85,12 +81,11 @@ public class ListBTDevices extends AppCompatActivity implements MyRecyclerViewAd
         i.putExtra("NAME", name);
 
         Log.d("Address", address);
-        Toast.makeText(this, "Connecting to " + name + " on address " + address, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,
+                String.format(this.getString(R.string.BT_connecting_to), name ,address),
+                Toast.LENGTH_SHORT).show();
 
         startActivity(i);
-
-//        Toast.makeText(this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
-
 
     }
 }

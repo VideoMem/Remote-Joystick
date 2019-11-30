@@ -1,12 +1,5 @@
 package com.example.remotejoystick;
 
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioTrack;
-import android.os.Handler;
-import android.os.Process;
-
-import static com.example.remotejoystick.MainActivity.xy;
 import static java.lang.Math.PI;
 import static java.lang.Math.round;
 import static java.lang.Math.sin;

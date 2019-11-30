@@ -4,21 +4,65 @@
     <string name="title_activity_settings">Settings</string>
 
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
+    <string name="messages_header" translatable="false">Messages</string>
+    <string name="sync_header" translatable="false">Sync</string>
 
     <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
+    <string name="signature_title" translatable="false">Your signature</string>
+    <string name="reply_title" translatable="false">Default reply action</string>
 
     <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    <string name="sync_title" translatable="false">Sync email periodically</string>
+    <string name="attachment_title" translatable="false">Download incoming attachments</string>
+    <string name="attachment_summary_on" translatable="false">Automatically download attachments for incoming emails
     </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="attachment_summary_off" translatable="false">Only download attachments when manually requested</string>
 
     <!-- App strings -->
-    <string name="soundbuffer_overflow_log">SoundBuffer write overflow</string>
+    <!-- SoundBuffer -->
+    <string name="soundbuffer_overflow_log" translatable="false">SoundBuffer write overflow</string>
+    <string name="soundbuffer_remove_ex_log" translatable="false">SoundBuffer remove exception</string>
+    <string name="soundbuffer_remove_ex_log_fmt" translatable="false">end: %d, i: %d, b: %b</string>
+
+    <!-- JoystickWidgets -->
+    <string name="JW_connected">%s connected (txq: %d)</string>
+    <string name="JW_BatteryVoltage">BAT: %02.02fV</string>
+    <string name="JW_no_device">No device connected</string>
+    
+    <!-- Settings -->
+    <string name="SET_no_device">No device selected</string>
+    <string name="SET_param_reset_conf">Confirm parameters reset</string>
+    <string name="SET_param_question">Are you sure?</string>
+    <string name="SET_yes">YES</string>
+    <string name="SET_no">NO</string>
+    <string name="SET_exit_conf">Confirm application exit</string>
+    <string name="SET_exit_question">Are you sure?</string>
+
+    <string name="SET_joystick_sensitivity">Joystick sensitivity</string>
+    <string name="SET_motor_limit">Motor power limit</string>
+    <string name="SET_retract_delay">Retract delay</string>
+    <string name="SET_retract_speed">Retract speed</string>
+    <string name="SET_device">Device</string>
+    <string name="SET_select_device">Select Device</string>
+    <string name="SET_Show_coord">Show coordinates</string>
+    <string name="SET_sound">Sound feedback</string>
+    <string name="SET_Advanced_settings">Advanced settings</string>
+    <string name="SET_Automata_Behaviour">Automata behaviour</string>
+    <string name="SET_Automatic_line_follower">Automatic line follower</string>
+    <string name="SET_Serial_Monitor">Serial Monitor</string>
+    <string name="SET_Default_Settings">Default Settings</string>
+    <string name="SET_Quit_Application">Quit Application</string>
+    <string name="SET_caterpillar">Caterpillar mode</string>
+
+    <!--BtDeviceList -->
+    <string name="BT_no_bt_device">Bluetooth device not available</string>
+    <string name="BT_no_paired">No paired Bluetooth devices found</string>
+    <string name="BT_not_available">No Bluetooth adapter on this device</string>
+    <string name="BT_connecting_to">Connecting to %s on address %s</string>
+    <string name="SET_device_fmt">Device %s         %s</string>
+    <string name="JW_forward">F</string>
+    <string name="JW_backward">B</string>
+    <string name="JW_left">L</string>
+    <string name="JW_right">R</string>
 
 </resources>

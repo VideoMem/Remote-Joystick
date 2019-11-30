@@ -1,10 +1,8 @@
 package com.example.remotejoystick;
 
-import android.appwidget.AppWidgetManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -31,6 +29,7 @@ public class SettingsView extends AppCompatActivity
     protected AppParameters param;
     protected Switch showCoords;
     protected Switch soundEnable;
+    protected Switch caterpillarEnabled;
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
@@ -67,6 +66,9 @@ public class SettingsView extends AppCompatActivity
             case R.id.soundFeed:
                 param.setSound(isChecked);
                 break;
+            case R.id.caterpillarMode:
+                param.setCaterpillar(isChecked);
+                break;
         }
     }
 
@@ -94,12 +96,17 @@ public class SettingsView extends AppCompatActivity
         showCoords.setOnCheckedChangeListener(this);
         soundEnable = findViewById(R.id.soundFeed);
         soundEnable.setOnCheckedChangeListener(this);
+        caterpillarEnabled = findViewById(R.id.caterpillarMode);
+        caterpillarEnabled.setOnCheckedChangeListener(this);
+
         read();
         TextView Device = findViewById(R.id.DevConfig);
         if(param.name != null)
-            Device.setText(String.format("Device %s\n%s", param.name, param.address));
+            Device.setText(String.format(
+                    this.getString(R.string.SET_device_fmt),
+                    param.name, param.address));
         else
-            Device.setText("Device not selected");
+            Device.setText(this.getString(R.string.SET_no_device));
     }
 
     protected void read() {
@@ -110,15 +117,17 @@ public class SettingsView extends AppCompatActivity
         retractSpeed.setProgress(param.getRetractSpeed());
         showCoords.setChecked(param.showCoordinates());
         soundEnable.setChecked(param.getSound());
+        caterpillarEnabled.setChecked(param.getCaterpillar());
     }
 
     public void resetDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setTitle("Confirm parameter reset");
-        builder.setMessage("Are you sure?");
+        builder.setTitle(this.getString(R.string.SET_param_reset_conf));
+        builder.setMessage(this.getString(R.string.SET_param_question));
 
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(this.getText(R.string.SET_yes),
+                new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
                 param.defaults();
@@ -127,11 +136,11 @@ public class SettingsView extends AppCompatActivity
             }
         });
 
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(this.getText(R.string.SET_no),
+                new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // Do nothing
                 dialog.dismiss();
             }
         });
@@ -143,23 +152,22 @@ public class SettingsView extends AppCompatActivity
     public void exitDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setTitle("Confirm application exit");
-        builder.setMessage("Are you sure?");
+        builder.setTitle(this.getString(R.string.SET_exit_conf));
+        builder.setMessage(this.getString(R.string.SET_exit_question));
 
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(
+                this.getString(R.string.SET_yes), new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                //finishAffinity();
                 System.exit(0);
                 dialog.dismiss();
             }
         });
 
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.SET_no, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // Do nothing
                 dialog.dismiss();
             }
         });

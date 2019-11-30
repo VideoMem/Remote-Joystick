@@ -10,7 +10,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:scrollbarAlwaysDrawHorizontalTrack="false"
             android:scrollbarAlwaysDrawVerticalTrack="false"
@@ -23,7 +23,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:text="Joystick Sensitivity"
+                android:layout_marginRight="10dp"
+                android:text="@string/SET_joystick_sensitivity"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <SeekBar
@@ -40,14 +41,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:text="Motor Power Limit"
+                android:layout_marginRight="10dp"
+                android:text="@string/SET_motor_limit"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <SeekBar
                 android:id="@+id/power"
                 android:layout_width="match_parent"
                 android:layout_height="34dp"
-                android:clickable="true"
                 android:focusable="auto"
                 android:focusableInTouchMode="true"
                 android:indeterminate="false"
@@ -60,7 +61,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:text="Retract delay"
+                android:layout_marginRight="10dp"
+                android:text="@string/SET_retract_delay"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <SeekBar
@@ -77,7 +79,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:text="Retract speed"
+                android:layout_marginRight="10dp"
+                android:text="@string/SET_retract_speed"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <SeekBar
@@ -94,20 +97,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:text="Device"
+                android:layout_marginRight="10dp"
+                android:text="@string/SET_device"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <Button
                 android:id="@+id/button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Select Device" />
+                android:text="@string/SET_select_device" />
 
             <TextView
                 android:id="@+id/textView5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:verticalScrollbarPosition="defaultPosition" />
 
@@ -118,7 +123,17 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
-                android:text="Show Coordinates"
+                android:text="@string/SET_Show_coord"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+            <Switch
+                android:id="@+id/caterpillarMode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:text="@string/SET_caterpillar"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <Switch
@@ -128,16 +143,17 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
-                android:text="Sound feedback"
+                android:text="@string/SET_sound"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <TextView
                 android:id="@+id/textView7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5px"
+                android:layout_marginLeft="5dp"
                 android:layout_marginTop="10dp"
-                android:text="Advanced settings"
+                android:layout_marginRight="5dp"
+                android:text="@string/SET_Advanced_settings"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
             <TextView
@@ -146,7 +162,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:text="Automata Behaviour"
+                android:layout_marginRight="10dp"
+                android:text="@string/SET_Automata_Behaviour"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <Switch
@@ -156,7 +173,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
-                android:text="Automatic line follower"
+                android:text="@string/SET_Automatic_line_follower"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <Button
@@ -164,21 +181,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text=" Serial Monitor" />
+                android:text="@string/SET_Serial_Monitor" />
 
             <Button
                 android:id="@+id/defSettings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Default Settings" />
+                android:text="@string/SET_Default_Settings" />
 
             <Button
                 android:id="@+id/exitApp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Quit Application" />
+                android:text="@string/SET_Quit_Application" />
 
             <FrameLayout
                 android:id="@+id/settings"

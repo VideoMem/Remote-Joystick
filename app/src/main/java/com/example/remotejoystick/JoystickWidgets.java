@@ -5,9 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.view.View;
-import android.widget.SeekBar;
+import android.util.Log;
 
+import static android.content.ContentValues.TAG;
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 import static java.lang.Math.cos;
@@ -27,13 +27,14 @@ public class JoystickWidgets extends ViewPort {
     protected int animSpeed;
     protected Point screen;
     protected int maxPower;
+    protected Context ctx;
 
     public JoystickWidgets(Context context, AppParameters p)  {
         super(context, p);
+        ctx = context;
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
         mCanvas = new Canvas();
         screen = new Point();
-        //mBitmap = new Bitmap();
         reset();
     }
 
@@ -68,22 +69,6 @@ public class JoystickWidgets extends ViewPort {
         Point center = new Point(); middle(center);
         return movex == center.x && movey == center.y;
     }
-
-    public void example() {
-        int radius;
-        radius = 50;
-        setBackgroundColor(Color.parseColor(colors.background));
-        Paint paint = new Paint();
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.parseColor(colors.foreground));
-        mCanvas.drawCircle(150,200, radius, paint);
-        mCanvas.drawRoundRect(new RectF(20,20,100,100), 20, 20, paint);
-        mCanvas.rotate(-45);
-        Point p = new Point();
-        getSize(p);
-        mCanvas.drawText("Hello world", 40, 180, paint);
-    }
-
 
     public void drawOption(String color) {
         Paint paint = new Paint();
@@ -186,20 +171,30 @@ public class JoystickWidgets extends ViewPort {
         if(param.getBtStatus()) {
             int signal = 100 - (100 * param.sendStream.size() / param.getTxBuffSize());
             mCanvas.drawText(
-                    String.format("%s connected (txq: %d)", param.getName(), signal),
+                    String.format(
+                            ctx.getString(R.string.JW_connected),
+                            param.getName(), signal),
                     40,
                     y() - 80,
                     paint
             );
             mCanvas.drawText(
-                    String.format("BAT: %02.02fV", param.voltage),
+                    String.format(
+                            ctx.getString(
+                                    R.string.JW_BatteryVoltage
+                            ), param.voltage),
                     40,
                     y() - 40,
                     paint
             );
 
         } else
-            mCanvas.drawText("No device connected", 40, y() -80, paint);
+            mCanvas.drawText(ctx.getString(
+                        R.string.JW_no_device
+                    ),
+                    40,
+                    y() -80,
+                    paint);
     }
 
     public void rubberCtrl(int x, int y) {
@@ -245,7 +240,6 @@ public class JoystickWidgets extends ViewPort {
         middle(center);
         int size = sizer(Sizes.small);
         int half = size/2;
-
         screen.x = x;
         screen.y = y;
 
@@ -262,7 +256,8 @@ public class JoystickWidgets extends ViewPort {
         paint.setStyle(Paint.Style.FILL);
         paint.setTextSize(60);
         paint.setTextAlign(Paint.Align.CENTER);
-        mCanvas.drawText("F", center.x, center.y - radius() - 15, paint);
+        mCanvas.drawText(ctx.getString(R.string.JW_forward),
+                center.x, center.y - radius() - 15, paint);
         mCanvas.drawText("B", center.x, center.y + radius() + 60, paint);
         paint.setTextAlign(Paint.Align.RIGHT);
         mCanvas.drawText("L", center.x - radius() -15, center.y + 15, paint);
