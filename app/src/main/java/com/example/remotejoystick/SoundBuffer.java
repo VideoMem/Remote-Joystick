@@ -1,4 +1,5 @@
 package com.example.remotejoystick;
+import android.content.res.Resources;
 import android.util.Log;
 
 import java.util.Arrays;
@@ -55,15 +56,8 @@ public class SoundBuffer {
                 }
             }
         } else {
-            Log.d(TAG, "too many data");
+            Log.d(TAG,  Resources.getSystem().getString(R.string.soundbuffer_overflow_log));
         }
-
-       // Log.d("Actual size", String.valueOf(qSize));
-       // Log.d("buffsize", String.valueOf(buffsize));
-      //  Log.d("qSound.size", String.valueOf(qSound.size()));
-
-        //for(j=p; j < s.length; ++j)
-          //  qSound.pop();
 
     }
 

@@ -44,7 +44,7 @@ public class XYView extends JoystickWidgets {
     {
         super.onDraw(canvas);
         canvas.drawBitmap(mBitmap,0 ,0, mBitmapPaint);
-        canvas.restore();
+        //canvas.restore();
     }
 
     protected  void audioSend() {
