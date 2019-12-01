@@ -13,7 +13,7 @@
     <string name="SET_Default_Settings">Configuración predeterminada</string>
     <string name="SET_Quit_Application">Salir de la aplicación</string>
     <string name="SET_Serial_Monitor">Monitor Serial</string>
-    <string name="SET_Show_coord">Ver coordenadas</string>
+    <string name="SET_Show_coord">Vibrar</string>
     <string name="SET_caterpillar">Modo oruga</string>
     <string name="SET_device">Dispositivo</string>
     <string name="SET_device_fmt">Dispositivo %s         %s</string>
@@ -33,8 +33,4 @@
     <string name="title_activity_settings">Configuración</string>
     <string name="title_activity_main">Control XY</string>
     <string name="BT_connecting_to">Conectando con %s en %s</string>
-    <string name="JW_forward">A</string>
-    <string name="JW_backward">R</string>
-    <string name="JW_left">I</string>
-    <string name="JW_right">D</string>
 </resources>

@@ -44,7 +44,7 @@
     <string name="SET_retract_speed">Retract speed</string>
     <string name="SET_device">Device</string>
     <string name="SET_select_device">Select Device</string>
-    <string name="SET_Show_coord">Show coordinates</string>
+    <string name="SET_Show_coord">Vibrate</string>
     <string name="SET_sound">Sound feedback</string>
     <string name="SET_Advanced_settings">Advanced settings</string>
     <string name="SET_Automata_Behaviour">Automata behaviour</string>
@@ -60,9 +60,9 @@
     <string name="BT_not_available">No Bluetooth adapter on this device</string>
     <string name="BT_connecting_to">Connecting to %s on address %s</string>
     <string name="SET_device_fmt">Device %s         %s</string>
-    <string name="JW_forward">F</string>
-    <string name="JW_backward">B</string>
-    <string name="JW_left">L</string>
-    <string name="JW_right">R</string>
+    <string name="JW_forward" translatable="false">↑</string>
+    <string name="JW_backward" translatable="false">↓</string>
+    <string name="JW_left" translatable="false">↶</string>
+    <string name="JW_right" translatable="false">↷</string>
 
 </resources>

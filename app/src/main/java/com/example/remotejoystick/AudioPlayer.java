@@ -34,11 +34,11 @@ public class AudioPlayer extends Thread {
                 buffsize,
                 AudioTrack.MODE_STREAM
         );
-        mAudio.stop();
         mBuffer.init(buffsize, SAMPLERATE);
 
 
         try {
+            mAudio.stop();
             mAudio.play();
         } catch (Exception e) {
             e.printStackTrace();

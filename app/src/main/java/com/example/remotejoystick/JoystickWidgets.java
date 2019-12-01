@@ -1,13 +1,26 @@
 package com.example.remotejoystick;
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Picture;
+import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.os.Vibrator;
+import android.view.ContextThemeWrapper;
 
-import static android.content.ContentValues.TAG;
+import androidx.core.content.res.ResourcesCompat;
+
+import com.caverock.androidsvg.PreserveAspectRatio;
+import com.caverock.androidsvg.RenderOptions;
+import com.caverock.androidsvg.SVG;
+
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 import static java.lang.Math.cos;
@@ -28,14 +41,35 @@ public class JoystickWidgets extends ViewPort {
     protected Point screen;
     protected int maxPower;
     protected Context ctx;
+    AssetManager am;
+    Typeface segments;
+    Typeface hd44780;
+    Picture tractor;
+    Picture caterpillar;
 
     public JoystickWidgets(Context context, AppParameters p)  {
         super(context, p);
+
         ctx = context;
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
         mCanvas = new Canvas();
         screen = new Point();
+        am = ctx.getApplicationContext().getAssets();
+        segments = Typeface.createFromAsset(am, String.format("fonts/%s", "DSEG14Classic-Bold.ttf"));
+        hd44780 = Typeface.createFromAsset(am, String.format("fonts/%s", "hd44780.ttf"));
         reset();
+        try {
+            SVG tr = SVG.getFromResource(getContext().getResources(), R.raw.tractor);
+            SVG cat = SVG.getFromResource(getContext().getResources(), R.raw.caterpillar);
+            RenderOptions renderOptions = RenderOptions.create();
+            renderOptions.css(String.format("* { fill: %s; }", colors.foreground));
+            cat.setRenderDPI(dp2px(8));
+            caterpillar = cat.renderToPicture(dp2px(30),dp2px(10), renderOptions);
+            tr.setRenderDPI(dp2px(5));
+            tractor = tr.renderToPicture(dp2px(30),dp2px(10), renderOptions);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void reset() {
@@ -49,7 +83,7 @@ public class JoystickWidgets extends ViewPort {
         setMaxPower(param.getPower());
         setSens(param.getSensitivity());
         setRetractDelay(param.getRetractDelay());
-        setRetractSpeed(param.getRetractSpeed());
+        setRetractSpeed(dp2px(param.getRetractSpeed()));
 
     }
 
@@ -77,7 +111,7 @@ public class JoystickWidgets extends ViewPort {
         paint.setColor(Color.parseColor(color));
         int len = sizer(Sizes.small) /2;
         int sep = sizer(Sizes.small) /8;
-        paint.setStrokeWidth(6);
+        paint.setStrokeWidth(dp2px(3));
         for(int i = 1; i < 8; i++){
             if(i % 2 == 0 )
             mCanvas.drawLine(
@@ -150,6 +184,116 @@ public class JoystickWidgets extends ViewPort {
         return yPos(rotated);
     }
 
+    public int px2dp(int px) {
+        float density = ctx.getResources().getDisplayMetrics().density;
+        return round(px / density);
+    }
+
+    public int dp2px(int dp) {
+        float density = ctx.getResources().getDisplayMetrics().density;
+        return round(dp * density);
+    }
+
+    public void sphere() {
+        shaft();
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setStrokeWidth(dp2px(3));
+        paint.setColor(Color.parseColor(colors.brick));
+        mCanvas.drawCircle(screen.x, screen.y, radius() /3, paint);
+        paint.setColor(Color.parseColor(colors.foreground));
+        mCanvas.drawCircle(screen.x - dp2px(10), screen.y - dp2px(10), radius() / 9, paint);
+
+    }
+
+    public void shaft() {
+        Point center = new Point();
+
+        middle(center);
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setStrokeWidth(dp2px(3));
+        paint.setColor(Color.parseColor(colors.foreground));
+        int radius = radius() / 6;
+        mCanvas.drawCircle(center.x, center.y, radius, paint);
+
+        Point bottomLeft = new Point();
+        bottomLeft.x = center.x - radius /2;
+        bottomLeft.y = center.y;
+
+        Point L = rotate(bottomLeft, screen, PI /4);
+        Point R = rotate(bottomLeft, screen, PI * 5/4);
+
+        //rotate(bottomLeft, angle(screen.x, screen.y) + PI / 4, result);
+        //if(cartesian.x < 0) {
+        //    result.x = x() - result.x;
+        //    result.y = y() - result.y;
+        //}
+
+        paint.setColor(Color.parseColor(colors.foreground));
+        Path stick = new Path();
+        stick.moveTo(L.x, L.y);
+        stick.lineTo(R.x, R.y);
+        Point topRight = traslate(L, screen.x, screen.y);
+        stick.lineTo(topRight.x, topRight.y);
+        stick.lineTo(L.x, L.y);
+        mCanvas.drawPath(stick, paint);
+        //mCanvas.drawLine(center.x, center.y, A.x, A.y, paint);
+        //mCanvas.drawLine(center.x, center.y, B.x, B.y, paint);
+        //mCanvas.drawCircle(screen.x - dp2px(10), screen.y - dp2px(10), radius() / 9, paint);
+    }
+
+
+    public void drawCaterpillar() {
+        try {
+            int left = dp2px(130);
+            int top  = dp2px(5);
+            Rect dst = new Rect(
+                    left,
+                    top,
+                    left + caterpillar.getWidth(),
+                    top + caterpillar.getHeight()
+            );
+            //dst.bottom = dp2px(10); dst.right = dp2px(30);
+            mCanvas.drawPicture(caterpillar, dst);
+            //mCanvas.drawPicture(icon);
+            //svg.renderToCanvas(mCanvas, renderOptions);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void drawTruck() {
+        try {
+            int left = dp2px(135);
+            int top  = dp2px(9);
+            Rect dst = new Rect(
+                    left,
+                    top,
+                    left + tractor.getWidth(),
+                    top + tractor.getHeight()
+            );
+            //dst.bottom = dp2px(10); dst.right = dp2px(30);
+            mCanvas.drawPicture(tractor, dst);
+            //mCanvas.drawPicture(icon);
+            //svg.renderToCanvas(mCanvas, renderOptions);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void icons() {
+        if(param.getCaterpillar()) {
+            drawCaterpillar();
+
+        } else {
+            drawTruck();
+        }
+    }
+
     public void powerUi() {
         Point crt = new Point(); crt.x = movex; crt.y = movey;
 
@@ -162,20 +306,37 @@ public class JoystickWidgets extends ViewPort {
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.parseColor(colors.foreground));
-        paint.setTextSize(60);
-        if(param.showCoordinates()) {
-            mCanvas.drawText(String.format("U: %03d", pu), 40, 80, paint);
-            mCanvas.drawText(String.format("V: %03d", pv), 40, 140, paint);
+        paint.setTypeface(segments);
+        paint.setTextSize(dp2px(30));
+
+        if(true) {
+            paint.setColor(Color.parseColor(colors.dark));
+            mCanvas.drawText("8: 888", dp2px(20), dp2px(40), paint);
+            mCanvas.drawText("8: 888", dp2px(20), dp2px(75), paint);
+            mCanvas.drawText("I: III", dp2px(20), dp2px(40), paint);
+            mCanvas.drawText("I: III", dp2px(20), dp2px(75), paint);
+            mCanvas.drawText("X: XXX", dp2px(20), dp2px(40), paint);
+            mCanvas.drawText("X: XXX", dp2px(20), dp2px(75), paint);
+
+            paint.setColor(Color.parseColor(colors.foreground));
+            String displayU = param.getCaterpillar() ? "U: %03d" : "X: %03d";
+            String displayV = param.getCaterpillar() ? "V: %03d" : "Y: %03d";
+            int valueU = param.getCaterpillar() ? abs(pu): abs(px);
+            int valueV = param.getCaterpillar() ? abs(pv): abs(py);
+            mCanvas.drawText(String.format(displayU, valueU), dp2px(20), dp2px(40), paint);
+            mCanvas.drawText(String.format(displayV, valueV), dp2px(20), dp2px(75), paint);
         }
-        paint.setTextSize(30);
+
+        paint.setTypeface(hd44780);
+        paint.setTextSize(dp2px(15));
         if(param.getBtStatus()) {
             int signal = 100 - (100 * param.sendStream.size() / param.getTxBuffSize());
             mCanvas.drawText(
                     String.format(
                             ctx.getString(R.string.JW_connected),
                             param.getName(), signal),
-                    40,
-                    y() - 80,
+                    dp2px(20),
+                    y() - dp2px(40),
                     paint
             );
             mCanvas.drawText(
@@ -183,8 +344,8 @@ public class JoystickWidgets extends ViewPort {
                             ctx.getString(
                                     R.string.JW_BatteryVoltage
                             ), param.voltage),
-                    40,
-                    y() - 40,
+                    dp2px(20),
+                    y() - dp2px(40),
                     paint
             );
 
@@ -192,9 +353,11 @@ public class JoystickWidgets extends ViewPort {
             mCanvas.drawText(ctx.getString(
                         R.string.JW_no_device
                     ),
-                    40,
-                    y() -80,
+                    dp2px(20),
+                    y() - dp2px(40),
                     paint);
+        sphere();
+        icons();
     }
 
     public void rubberCtrl(int x, int y) {
@@ -211,7 +374,7 @@ public class JoystickWidgets extends ViewPort {
 
     public void xyScreen() {
         reset();
-        crossHair(movex,movey);
+        crossHair(movex, movey);
     }
 
     public void truncate() {
@@ -251,21 +414,29 @@ public class JoystickWidgets extends ViewPort {
         paint.setColor(Color.parseColor(colors.foreground));
         //circle
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(3);
+        paint.setStrokeWidth(dp2px(3));
         mCanvas.drawCircle(center.x, center.y, radius(), paint);
         paint.setStyle(Paint.Style.FILL);
-        paint.setTextSize(60);
+        paint.setTextSize(dp2px(30));
         paint.setTextAlign(Paint.Align.CENTER);
         mCanvas.drawText(ctx.getString(R.string.JW_forward),
-                center.x, center.y - radius() - 15, paint);
-        mCanvas.drawText("B", center.x, center.y + radius() + 60, paint);
+                center.x, center.y - radius() - dp2px(7), paint);
+        mCanvas.drawText(ctx.getString(R.string.JW_backward),
+                center.x, center.y + radius() + dp2px(28), paint);
         paint.setTextAlign(Paint.Align.RIGHT);
-        mCanvas.drawText("L", center.x - radius() -15, center.y + 15, paint);
+        mCanvas.drawText(ctx.getString(R.string.JW_left),
+                center.x - radius() - dp2px(3), center.y + dp2px(3), paint);
         paint.setTextAlign(Paint.Align.LEFT);
-        mCanvas.drawText("R", center.x + radius() +15, center.y + 15, paint);
+        mCanvas.drawText(ctx.getString(R.string.JW_right),
+                center.x + radius() + dp2px(3), center.y + dp2px(3), paint);
         drawOption(colors.foreground);
 
         if (radius(x, y) > radius()) {
+
+            Vibrator v = (Vibrator) ctx.getSystemService(Context.VIBRATOR_SERVICE);
+            if (System.currentTimeMillis() % 100 < 50 && param.showCoordinates())
+                v.vibrate(10);
+
             Point cartesian = new Point();
             toCartesian(x, y, cartesian);
             fromCartesian(
@@ -282,7 +453,7 @@ public class JoystickWidgets extends ViewPort {
             int sxe = screen.x + half;
             int sys = screen.y - half;
             int sye = screen.y + half;
-            paint.setStrokeWidth(3);
+            paint.setStrokeWidth(dp2px(3));
             mCanvas.drawLine(sxs, screen.y, sxe, screen.y, paint);
             mCanvas.drawLine(screen.x, sys, screen.x, sye, paint);
         } else {
@@ -292,7 +463,7 @@ public class JoystickWidgets extends ViewPort {
             int ye = y + half;
 
             //crosshair
-            paint.setStrokeWidth(1);
+            paint.setStrokeWidth(dp2px(1));
             mCanvas.drawLine(xs, y, xe, y, paint);
             mCanvas.drawLine(x, ys, x, ye, paint);
         }
