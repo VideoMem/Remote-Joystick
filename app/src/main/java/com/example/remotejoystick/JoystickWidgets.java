@@ -1,7 +1,6 @@
 package com.example.remotejoystick;
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -11,13 +10,8 @@ import android.graphics.Picture;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Vibrator;
-import android.view.ContextThemeWrapper;
 
-import androidx.core.content.res.ResourcesCompat;
-
-import com.caverock.androidsvg.PreserveAspectRatio;
 import com.caverock.androidsvg.RenderOptions;
 import com.caverock.androidsvg.SVG;
 
@@ -170,6 +164,16 @@ public class JoystickWidgets extends ViewPort {
     public int xPos(Point crt) { return xPos(maxPower, crt); }
     public int yPos(Point crt) { return yPos(maxPower, crt); }
 
+    public int xPow() {
+        Point crt = new Point(); crt.x = movex; crt.y = movey;
+        return xPos(crt);
+    }
+
+    public int yPow() {
+        Point crt = new Point(); crt.x = movex; crt.y = movey;
+        return yPos(crt);
+    }
+
     public int uPow() {
         Point crt = new Point(); crt.x = movex; crt.y = movey;
         Point rotated = new Point();
@@ -226,12 +230,6 @@ public class JoystickWidgets extends ViewPort {
         Point L = rotate(bottomLeft, screen, PI /4);
         Point R = rotate(bottomLeft, screen, PI * 5/4);
 
-        //rotate(bottomLeft, angle(screen.x, screen.y) + PI / 4, result);
-        //if(cartesian.x < 0) {
-        //    result.x = x() - result.x;
-        //    result.y = y() - result.y;
-        //}
-
         paint.setColor(Color.parseColor(colors.foreground));
         Path stick = new Path();
         stick.moveTo(L.x, L.y);
@@ -240,11 +238,7 @@ public class JoystickWidgets extends ViewPort {
         stick.lineTo(topRight.x, topRight.y);
         stick.lineTo(L.x, L.y);
         mCanvas.drawPath(stick, paint);
-        //mCanvas.drawLine(center.x, center.y, A.x, A.y, paint);
-        //mCanvas.drawLine(center.x, center.y, B.x, B.y, paint);
-        //mCanvas.drawCircle(screen.x - dp2px(10), screen.y - dp2px(10), radius() / 9, paint);
     }
-
 
     public void drawCaterpillar() {
         try {
@@ -256,10 +250,9 @@ public class JoystickWidgets extends ViewPort {
                     left + caterpillar.getWidth(),
                     top + caterpillar.getHeight()
             );
-            //dst.bottom = dp2px(10); dst.right = dp2px(30);
+
             mCanvas.drawPicture(caterpillar, dst);
-            //mCanvas.drawPicture(icon);
-            //svg.renderToCanvas(mCanvas, renderOptions);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -275,10 +268,9 @@ public class JoystickWidgets extends ViewPort {
                     left + tractor.getWidth(),
                     top + tractor.getHeight()
             );
-            //dst.bottom = dp2px(10); dst.right = dp2px(30);
+
             mCanvas.drawPicture(tractor, dst);
-            //mCanvas.drawPicture(icon);
-            //svg.renderToCanvas(mCanvas, renderOptions);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -345,7 +337,7 @@ public class JoystickWidgets extends ViewPort {
                                     R.string.JW_BatteryVoltage
                             ), param.voltage),
                     dp2px(20),
-                    y() - dp2px(40),
+                    y() - dp2px(20),
                     paint
             );
 
@@ -471,6 +463,5 @@ public class JoystickWidgets extends ViewPort {
         mCanvas.drawLine(center.x, center.y, screen.x, screen.y, paint);
         powerUi();
     }
-
 
 }

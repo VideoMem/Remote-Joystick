@@ -30,6 +30,7 @@ public class SettingsView extends AppCompatActivity
     protected Switch showCoords;
     protected Switch soundEnable;
     protected Switch caterpillarEnabled;
+    protected Switch logMode;
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
@@ -69,6 +70,9 @@ public class SettingsView extends AppCompatActivity
             case R.id.caterpillarMode:
                 param.setCaterpillar(isChecked);
                 break;
+            case R.id.logScale:
+                param.setLogMode(isChecked);
+                break;
         }
     }
 
@@ -98,6 +102,8 @@ public class SettingsView extends AppCompatActivity
         soundEnable.setOnCheckedChangeListener(this);
         caterpillarEnabled = findViewById(R.id.caterpillarMode);
         caterpillarEnabled.setOnCheckedChangeListener(this);
+        logMode = findViewById(R.id.logScale);
+        logMode.setOnCheckedChangeListener(this);
 
         read();
         TextView Device = findViewById(R.id.DevConfig);
@@ -118,6 +124,7 @@ public class SettingsView extends AppCompatActivity
         showCoords.setChecked(param.showCoordinates());
         soundEnable.setChecked(param.getSound());
         caterpillarEnabled.setChecked(param.getCaterpillar());
+        logMode.setChecked(param.getLogMode());
     }
 
     public void resetDialog() {

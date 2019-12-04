@@ -33,4 +33,5 @@
     <string name="title_activity_settings">Configuración</string>
     <string name="title_activity_main">Control XY</string>
     <string name="BT_connecting_to">Conectando con %s en %s</string>
+    <string name="SET_log_mode">Respuesta logarítmica</string>
 </resources>

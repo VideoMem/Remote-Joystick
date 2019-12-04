@@ -3,11 +3,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.MotionEvent;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static android.content.ContentValues.TAG;
 import static java.lang.Math.abs;
+import static java.lang.Math.log;
 import static java.lang.Math.round;
 
 
@@ -19,6 +23,7 @@ public class XYView extends JoystickWidgets {
     protected boolean ignoreMove;
     protected static SoundSynth audio;
     protected boolean stopRetraction;
+    protected int lastPointerCount;
 
     public XYView(Context context, AppCompatActivity ref, AppParameters p) {
         super(context, p);
@@ -30,6 +35,7 @@ public class XYView extends JoystickWidgets {
         audio = new SoundSynth(this, param);
         audio.mute(false);
         stopRetraction = true;
+        lastPointerCount = 0;
     }
 
     @Override
@@ -56,9 +62,43 @@ public class XYView extends JoystickWidgets {
         }
     }
 
+    protected int logCorrection(int x) {
+        double out = 67.605 * log((double) abs(x)) - 106.732;
+        out = out > 255? 255: out;
+        return x > 0 ? (int) round(out) : -(int) round(out);
+    }
+
+    protected synchronized void command(String cmd) {
+        param.sendStream.add(cmd);
+    }
+
     protected synchronized void command() {
         if(param.sendStream.size() < param.getTxBuffSize())
-            param.sendStream.add(String.format("U%dV%d", uPow(), vPow()));
+            if (param.getCaterpillar()) {
+                if (!param.getLogMode()) {
+                    param.sendStream.add(String.format("U%dV%d",
+                            uPow(),
+                            vPow())
+                    );
+                } else {
+                    param.sendStream.add(String.format("U%dV%d",
+                            logCorrection(uPow()),
+                            logCorrection(vPow()))
+                    );
+                }
+            } else {
+                if(!param.getLogMode()) {
+                    param.sendStream.add(String.format("X%dY%d",
+                            xPow(),
+                            yPow())
+                    );
+                } else {
+                    param.sendStream.add(String.format("X%dY%d",
+                            logCorrection(xPow()),
+                            logCorrection(yPow()))
+                    );
+                }
+            }
     }
 
     protected void retractTimer(int delay) {
@@ -162,8 +202,24 @@ public class XYView extends JoystickWidgets {
         activity.startActivity(intent);
     }
 
+
+    public void handleMultitouch(MotionEvent ev) {
+        if(ev.getPointerCount() != lastPointerCount) {
+            if(ev.getPointerCount() > 1) {
+                command("M8");
+                Log.d(TAG, "Down");
+            } else {
+                command("M9");
+                Log.d(TAG, "UP");
+            }
+        }
+        lastPointerCount = ev.getPointerCount();
+    }
+
+
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        handleMultitouch(ev);
         int x = (int)ev.getX();
         int y = (int)ev.getY();
 

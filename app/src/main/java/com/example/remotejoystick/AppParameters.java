@@ -19,7 +19,10 @@ public class AppParameters extends Application {
     protected int txBuffSize;
     public volatile double voltage;
     protected boolean caterpillar;
+    protected boolean logMode;
 
+    public void setLogMode(boolean log) { logMode = log; }
+    public boolean getLogMode() { return logMode; }
     public void clearSend() { while (sendStream.size() > 0) sendStream.remove(); }
     public void setBtStatus(boolean state) { btStatus = state; }
     public boolean getBtStatus() { return  btStatus; }
@@ -28,13 +31,14 @@ public class AppParameters extends Application {
 
     public void defaults() {
         setPower(255);
-        setSensitivity(2);
+        setSensitivity(1);
         setRetractDelay(300);
-        setRetractSpeed(50);
+        setRetractSpeed(10);
         setCoordVisible(true);
         setSound(false);
         setTxBuffSize(32);
         setCaterpillar(true);
+        setLogMode(true);
     }
 
     public AppParameters() {

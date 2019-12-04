@@ -64,5 +64,6 @@
     <string name="JW_backward" translatable="false">↓</string>
     <string name="JW_left" translatable="false">↶</string>
     <string name="JW_right" translatable="false">↷</string>
+    <string name="SET_log_mode">Logarithmic response</string>
 
 </resources>
