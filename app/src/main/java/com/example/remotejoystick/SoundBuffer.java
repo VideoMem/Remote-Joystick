@@ -17,6 +17,7 @@ public class SoundBuffer {
     protected final int margin = 2;
     protected final int depth = 1;
     protected short[] read;
+    protected int buffmargin;
 
     public int getSAMPLERATE() { return  SAMPLERATE; }
     public int getBuffsize() { return  buffsize; }
@@ -33,7 +34,8 @@ public class SoundBuffer {
         silence = new short[buffsize];
         qSound  = new LinkedList<>();
         last = silence.clone();
-        read = new short[buffsize*margin];
+        buffmargin = buffsize * margin;
+        read = new short[buffmargin];
     }
 
     public void mute(boolean f) { mute = f; }
@@ -94,8 +96,8 @@ public class SoundBuffer {
 
         if (!mute) {
             if(i > 0) return read;
-              write(last);
-              return read();
+            write(last);
+            //return read();
         }
         return silence;
     }

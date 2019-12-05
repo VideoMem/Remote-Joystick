@@ -38,6 +38,7 @@ public class ListBTDevices extends AppCompatActivity implements MyRecyclerViewAd
         } else if ( !myBluetooth.isEnabled() ) {
             Intent turnBTon = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(turnBTon, 1);
+            finish();
         }
         devicelist = findViewById(R.id.devices);
         devicelist.setLayoutManager(new LinearLayoutManager(this));
@@ -86,6 +87,7 @@ public class ListBTDevices extends AppCompatActivity implements MyRecyclerViewAd
                 Toast.LENGTH_SHORT).show();
 
         startActivity(i);
+        finish();
 
     }
 }

@@ -164,7 +164,7 @@ public class BTConnManager extends Thread {
     }
 
     public void pollBattery() {
-        sendSignal("B");
+        sendSignal("B0");
         String msg = receiveSignal();
         if(msg.length() > 0) param.voltage = parser.getBatteryVoltage(msg);
         if(failCount > 8) {

@@ -166,8 +166,12 @@ public class SettingsView extends AppCompatActivity
                 this.getString(R.string.SET_yes), new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                System.exit(0);
                 dialog.dismiss();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("EXIT", "EXIT");
+                startActivity(intent);
+                finish();
             }
         });
 

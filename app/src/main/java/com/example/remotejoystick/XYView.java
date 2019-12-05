@@ -202,20 +202,16 @@ public class XYView extends JoystickWidgets {
         activity.startActivity(intent);
     }
 
-
     public void handleMultitouch(MotionEvent ev) {
         if(ev.getPointerCount() != lastPointerCount) {
             if(ev.getPointerCount() > 1) {
                 command("M8");
-                Log.d(TAG, "Down");
             } else {
                 command("M9");
-                Log.d(TAG, "UP");
             }
         }
         lastPointerCount = ev.getPointerCount();
     }
-
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
