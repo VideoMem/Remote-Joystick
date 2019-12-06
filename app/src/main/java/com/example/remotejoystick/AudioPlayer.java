@@ -45,6 +45,7 @@ public class AudioPlayer extends Thread {
         }
 
         kill = false;
+        Log.d("AudioPlayer", "Audio Thread started");
     }
 
     protected void play() {

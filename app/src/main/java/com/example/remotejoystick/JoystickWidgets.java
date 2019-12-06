@@ -43,7 +43,7 @@ public class JoystickWidgets extends ViewPort {
 
     public JoystickWidgets(Context context, AppParameters p)  {
         super(context, p);
-
+        setParams(p);
         ctx = context;
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
         mCanvas = new Canvas();
