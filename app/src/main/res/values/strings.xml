@@ -65,5 +65,7 @@
     <string name="JW_left" translatable="false">↶</string>
     <string name="JW_right" translatable="false">↷</string>
     <string name="SET_log_mode">Logarithmic response</string>
+    <string name="SET_LINEAR">Linear</string>
+    <string name="SET_LOG">Logarithmic</string>
 
 </resources>

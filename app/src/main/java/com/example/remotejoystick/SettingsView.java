@@ -31,6 +31,7 @@ public class SettingsView extends AppCompatActivity
     protected Switch soundEnable;
     protected Switch caterpillarEnabled;
     protected Switch logMode;
+    protected SeekBar logComponent;
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
@@ -54,6 +55,9 @@ public class SettingsView extends AppCompatActivity
                 break;
             case R.id.retractSpeed:
                 param.setRetractSpeed(retractSpeed.getProgress());
+                break;
+            case R.id.logMixer:
+                param.setLogAmount(logComponent.getProgress());
                 break;
         }
     }
@@ -96,6 +100,8 @@ public class SettingsView extends AppCompatActivity
         retractDelay.setOnSeekBarChangeListener(this);
         retractSpeed = findViewById(R.id.retractSpeed);
         retractSpeed.setOnSeekBarChangeListener(this);
+        logComponent = findViewById(R.id.logMixer);
+        logComponent.setOnSeekBarChangeListener(this);
         showCoords = findViewById(R.id.showCoords);
         showCoords.setOnCheckedChangeListener(this);
         soundEnable = findViewById(R.id.soundFeed);
@@ -104,6 +110,7 @@ public class SettingsView extends AppCompatActivity
         caterpillarEnabled.setOnCheckedChangeListener(this);
         logMode = findViewById(R.id.logScale);
         logMode.setOnCheckedChangeListener(this);
+
 
         read();
         TextView Device = findViewById(R.id.DevConfig);
@@ -121,6 +128,7 @@ public class SettingsView extends AppCompatActivity
         power.setProgress(param.getPower());
         retractDelay.setProgress(param.getRetractDelay());
         retractSpeed.setProgress(param.getRetractSpeed());
+        logComponent.setProgress((int) param.getLogAmount());
         showCoords.setChecked(param.showCoordinates());
         soundEnable.setChecked(param.getSound());
         caterpillarEnabled.setChecked(param.getCaterpillar());

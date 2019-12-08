@@ -20,10 +20,13 @@ public class AppParameters extends Application {
     public volatile double voltage;
     protected boolean caterpillar;
     protected boolean logMode;
+    protected double logAmount;
     protected boolean exitAll;
 
     public void setExitAll(boolean flag) { exitAll = flag; }
     public boolean getExitAll() { return exitAll; }
+    public void setLogAmount(double v) { logAmount = v; }
+    public double getLogAmount() { return logAmount; }
     public void setLogMode(boolean log) { logMode = log; }
     public boolean getLogMode() { return logMode; }
     public void clearSend() { while (sendStream.size() > 0) sendStream.remove(); }
@@ -42,6 +45,7 @@ public class AppParameters extends Application {
         setTxBuffSize(32);
         setCaterpillar(true);
         setLogMode(true);
+        setLogAmount(50);
         setExitAll(false);
     }
 

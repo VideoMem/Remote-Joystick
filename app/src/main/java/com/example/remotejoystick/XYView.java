@@ -3,13 +3,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.util.Log;
 import android.view.MotionEvent;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static android.content.ContentValues.TAG;
 import static java.lang.Math.abs;
 import static java.lang.Math.log;
 import static java.lang.Math.round;
@@ -64,7 +62,8 @@ public class XYView extends JoystickWidgets {
 
     protected int logCorrection(int x) {
         double out = 67.605 * log((double) abs(x)) - 106.732;
-        out = out > 255? 255: out;
+        out = out > param.getPower()? param.getPower(): out;
+        if(out < 0) out = 0;
         return x > 0 ? (int) round(out) : -(int) round(out);
     }
 

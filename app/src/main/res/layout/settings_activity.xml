@@ -18,7 +18,7 @@
             android:scrollbars="vertical">
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -88,6 +88,42 @@
                 android:layout_width="match_parent"
                 android:layout_height="34dp"
                 android:indeterminate="false"
+                android:max="100"
+                android:progress="50" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="161dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:text="@string/SET_LINEAR"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:autoText="false"
+                    android:gravity="right"
+                    android:text="@string/SET_LOG"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/logMixer"
+                style="@style/Widget.AppCompat.SeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
                 android:max="100"
                 android:progress="50" />
 

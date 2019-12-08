@@ -321,6 +321,15 @@ public class JoystickWidgets extends ViewPort {
 
         paint.setTypeface(hd44780);
         paint.setTextSize(dp2px(15));
+
+        mCanvas.drawText(
+                String.format("Max Power: %d",
+                        param.getPower()),
+                dp2px(20),
+                y() - dp2px(60),
+                paint
+        );
+
         if(param.getBtStatus()) {
             int signal = 100 - (100 * param.sendStream.size() / param.getTxBuffSize());
             mCanvas.drawText(
