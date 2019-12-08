@@ -18,6 +18,7 @@ import com.caverock.androidsvg.SVG;
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 import static java.lang.Math.cos;
+import static java.lang.Math.log;
 import static java.lang.Math.round;
 import static java.lang.Math.sin;
 
@@ -286,6 +287,23 @@ public class JoystickWidgets extends ViewPort {
         }
     }
 
+    protected double logValue(int x) {
+        double out = 67.605 * log((double) abs(x)) - 106.732;
+        return out;
+    }
+
+    protected int logCorrection(int x) {
+        double log = logValue(x);
+        double lin = abs(x);
+        double a = param.getLogAmount() / 100;
+        double b = (100 - param.getLogAmount()) / 100;
+        double out = (a * log) + (b * lin);
+        out = out > param.getPower()? param.getPower(): out;
+        if(out < 0) out = 0;
+        return x > 0 ? (int) round(out) : -(int) round(out);
+    }
+
+
     public void powerUi() {
         Point crt = new Point(); crt.x = movex; crt.y = movey;
 
@@ -315,6 +333,8 @@ public class JoystickWidgets extends ViewPort {
             String displayV = param.getCaterpillar() ? "V: %03d" : "Y: %03d";
             int valueU = param.getCaterpillar() ? abs(pu): abs(px);
             int valueV = param.getCaterpillar() ? abs(pv): abs(py);
+            valueU = param.getLogMode() ? logCorrection(valueU): valueU;
+            valueV = param.getLogMode() ? logCorrection(valueV): valueV;
             mCanvas.drawText(String.format(displayU, valueU), dp2px(20), dp2px(40), paint);
             mCanvas.drawText(String.format(displayV, valueV), dp2px(20), dp2px(75), paint);
         }
@@ -322,13 +342,13 @@ public class JoystickWidgets extends ViewPort {
         paint.setTypeface(hd44780);
         paint.setTextSize(dp2px(15));
 
-        mCanvas.drawText(
+      /*  mCanvas.drawText(
                 String.format("Max Power: %d",
                         param.getPower()),
                 dp2px(20),
                 y() - dp2px(60),
                 paint
-        );
+        ); */
 
         if(param.getBtStatus()) {
             int signal = 100 - (100 * param.sendStream.size() / param.getTxBuffSize());

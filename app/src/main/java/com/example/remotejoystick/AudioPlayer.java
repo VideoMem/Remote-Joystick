@@ -10,7 +10,7 @@ import static android.content.ContentValues.TAG;
 
 public class AudioPlayer extends Thread {
     protected volatile SoundBuffer mBuffer;
-    protected static AudioTrack mAudio;
+    protected volatile AudioTrack mAudio;
     protected boolean kill;
     protected int frame;
     protected int SAMPLERATE = 44100;
@@ -42,6 +42,7 @@ public class AudioPlayer extends Thread {
             mAudio.play();
         } catch (Exception e) {
             e.printStackTrace();
+            setup(mb);
         }
 
         kill = false;

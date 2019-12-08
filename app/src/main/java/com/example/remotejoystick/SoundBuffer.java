@@ -76,7 +76,7 @@ public class SoundBuffer {
         int p =0,i=0;
 
         Iterator iterator = qSound.iterator();
-        while (iterator.hasNext()) {
+        while (iterator.hasNext() && i < buffmargin) {
             try {
                 read[i] = qSound.remove();
                 if(i > 0 && read[i] > 0 && read[i -1] <= 0) p = i;

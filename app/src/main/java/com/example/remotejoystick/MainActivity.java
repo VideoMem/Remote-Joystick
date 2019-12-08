@@ -50,10 +50,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(xy);
         xy.refreshTimer(100);
 
-        if(player != null) player.end();
-        player = new AudioPlayer();
-        player.setup(params.soundBuffer);
-        player.start();
+        if(player == null) {
+            //player.end();
+            player = new AudioPlayer();
+            player.setup(params.soundBuffer);
+            player.start();
+        }
     }
 
     @Override

@@ -52,20 +52,20 @@ public class XYView extends JoystickWidgets {
     }
 
     protected  void audioSend() {
-        int fx = 30 + abs(round(uPow() * 80 / param.getPower()));
-        int fy = 30 + abs(round(vPow() * 80 / param.getPower()));
+        int fx= param.getLogMode()?
+                30 + abs(round(uPow() * 80 / param.getPower())):
+                30 + abs(round(logCorrection(uPow()) * 80 / param.getPower()));
+        int fy= param.getLogMode() ?
+                30 + abs(round(vPow() * 80 / param.getPower())):
+                30 + abs(round(logCorrection(vPow()) * 80 / param.getPower()));
         if(param.getSound()) {
             audio.play(fx, fy);
             audio.push(param.soundBuffer);
         }
     }
 
-    protected int logCorrection(int x) {
-        double out = 67.605 * log((double) abs(x)) - 106.732;
-        out = out > param.getPower()? param.getPower(): out;
-        if(out < 0) out = 0;
-        return x > 0 ? (int) round(out) : -(int) round(out);
-    }
+
+
 
     protected synchronized void command(String cmd) {
         param.sendStream.add(cmd);
