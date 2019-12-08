@@ -36,4 +36,5 @@
     <string name="SET_log_mode">Respuesta logarítmica</string>
     <string name="SET_LINEAR">Lineal</string>
     <string name="SET_LOG">Logarítmico</string>
+    <string name="JW_MAXPOWER">Potencia máxima: %#02X</string>
 </resources>

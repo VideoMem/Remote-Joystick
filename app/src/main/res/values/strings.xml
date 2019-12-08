@@ -67,5 +67,6 @@
     <string name="SET_log_mode">Logarithmic response</string>
     <string name="SET_LINEAR">Linear</string>
     <string name="SET_LOG">Logarithmic</string>
+    <string name="JW_MAXPOWER">Maximum power: %#02X</string>
 
 </resources>

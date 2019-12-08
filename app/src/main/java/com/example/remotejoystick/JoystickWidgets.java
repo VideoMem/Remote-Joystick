@@ -11,6 +11,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Vibrator;
+import android.util.Log;
 
 import com.caverock.androidsvg.RenderOptions;
 import com.caverock.androidsvg.SVG;
@@ -209,20 +210,27 @@ public class JoystickWidgets extends ViewPort {
         mCanvas.drawCircle(screen.x, screen.y, radius() /3, paint);
         paint.setColor(Color.parseColor(colors.foreground));
         mCanvas.drawCircle(screen.x - dp2px(10), screen.y - dp2px(10), radius() / 9, paint);
-
     }
 
     public void shaft() {
         Point center = new Point();
-
         middle(center);
+
+        double dx = (double) (screen.x - center.x) / 3;
+        double dy = (double) (screen.y - center.y) / 3;
+
         Paint paint = new Paint();
-        paint.setStyle(Paint.Style.STROKE);
         paint.setStyle(Paint.Style.FILL);
-        paint.setStrokeWidth(dp2px(3));
-        paint.setColor(Color.parseColor(colors.foreground));
+        paint.setStrokeWidth(dp2px(1));
+        paint.setColor(Color.parseColor(colors.dark));
         int radius = radius() / 6;
-        mCanvas.drawCircle(center.x, center.y, radius, paint);
+        mCanvas.drawCircle(center.x + round(dx), center.y + round(dy), radius, paint);
+        paint.setColor(Color.parseColor(colors.foreground));
+        paint.setAlpha(69);
+        paint.setStyle(Paint.Style.STROKE);
+        mCanvas.drawCircle(center.x + round(dx), center.y + round(dy), radius, paint);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setAlpha(0xFF);
 
         Point bottomLeft = new Point();
         bottomLeft.x = center.x - radius /2;
@@ -231,13 +239,18 @@ public class JoystickWidgets extends ViewPort {
         Point L = rotate(bottomLeft, screen, PI /4);
         Point R = rotate(bottomLeft, screen, PI * 5/4);
 
+        mCanvas.drawCircle(center.x + round(dx), center.y + round(dy), radius(L.x, L.y), paint);
+
+
         paint.setColor(Color.parseColor(colors.foreground));
         Path stick = new Path();
-        stick.moveTo(L.x, L.y);
-        stick.lineTo(R.x, R.y);
-        Point topRight = traslate(L, screen.x, screen.y);
+        stick.moveTo(L.x + round(dx), L.y + round(dy));
+        stick.lineTo(R.x + round(dx), R.y + round(dy));
+        Point topRight = traslate(R, screen.x, screen.y);
+        Point topLeft  = traslate(L, screen.x, screen.y);
         stick.lineTo(topRight.x, topRight.y);
-        stick.lineTo(L.x, L.y);
+        stick.lineTo(topLeft.x, topLeft.y);
+        stick.lineTo(L.x + round(dx), L.y + round(dy));
         mCanvas.drawPath(stick, paint);
     }
 
@@ -321,13 +334,14 @@ public class JoystickWidgets extends ViewPort {
 
         if(true) {
             paint.setColor(Color.parseColor(colors.dark));
+            paint.setAlpha(128);
             mCanvas.drawText("8: 888", dp2px(20), dp2px(40), paint);
             mCanvas.drawText("8: 888", dp2px(20), dp2px(75), paint);
             mCanvas.drawText("I: III", dp2px(20), dp2px(40), paint);
             mCanvas.drawText("I: III", dp2px(20), dp2px(75), paint);
             mCanvas.drawText("X: XXX", dp2px(20), dp2px(40), paint);
             mCanvas.drawText("X: XXX", dp2px(20), dp2px(75), paint);
-
+            paint.setAlpha(0xFF);
             paint.setColor(Color.parseColor(colors.foreground));
             String displayU = param.getCaterpillar() ? "U: %03d" : "X: %03d";
             String displayV = param.getCaterpillar() ? "V: %03d" : "Y: %03d";
@@ -342,13 +356,13 @@ public class JoystickWidgets extends ViewPort {
         paint.setTypeface(hd44780);
         paint.setTextSize(dp2px(15));
 
-      /*  mCanvas.drawText(
-                String.format("Max Power: %d",
+        mCanvas.drawText(
+                String.format(ctx.getString(R.string.JW_MAXPOWER),
                         param.getPower()),
                 dp2px(20),
                 y() - dp2px(60),
                 paint
-        ); */
+        );
 
         if(param.getBtStatus()) {
             int signal = 100 - (100 * param.sendStream.size() / param.getTxBuffSize());
@@ -419,6 +433,67 @@ public class JoystickWidgets extends ViewPort {
         }
     }
 
+    public void drawRubber() {
+        Point center = new Point();
+        middle(center);
+        Paint fore = new Paint();
+        Paint back = new Paint();
+        Paint bright = new Paint();
+
+        bright.setColor(Color.parseColor(colors.foreground));
+        bright.setStyle(Paint.Style.STROKE);
+        bright.setStrokeWidth(dp2px(1));
+        bright.setAlpha(69);
+
+        fore.setColor(Color.parseColor(colors.background));
+        fore.setStyle(Paint.Style.FILL);
+        fore.setStrokeWidth(dp2px(1));
+        fore.setAlpha(128);
+
+        back.setColor(Color.parseColor(colors.dark));
+        back.setStyle(Paint.Style.FILL);
+        back.setStrokeWidth(dp2px(1));
+
+        double pos; long pow; int idx, j;
+        double dx, dy;
+        for(int i = 1000; i >= 0; i-=100) {
+            j = 1000 - i;
+            idx = i / 100;
+            dx = (double) (screen.x - center.x) * j / 3000;
+            dy = (double) (screen.y - center.y) * j / 3000;
+            Log.d("idx:", String.format("%d\n", idx));
+            Paint selected = new Paint(idx % 2 == 0? back: fore);
+            pow = round(0xFF * (double) i / 1000);
+            pos = (double) radius() * (double) logCorrection((int) pow) / 0xFF;
+            mCanvas.drawCircle(center.x + round(dx), center.y + round(dy), (float) pos, selected);
+            mCanvas.drawCircle(center.x + round(dx), center.y + round(dy), (float) pos, bright);
+        }
+
+    }
+
+    protected void updateScreen(int x, int y) {
+        if (radius(x, y) > radius()) {
+
+            Vibrator v = (Vibrator) ctx.getSystemService(Context.VIBRATOR_SERVICE);
+            if (System.currentTimeMillis() % 100 < 50 && param.showCoordinates())
+                v.vibrate(10);
+
+            Point cartesian = new Point();
+            toCartesian(x, y, cartesian);
+            fromCartesian(
+                    (int) round(radius() * cos(angle(x, y))),
+                    (int) round(radius() * sin(angle(x, y))),
+                    screen
+            );
+
+            if (cartesian.x < 0) {
+                screen.x = x() - screen.x;
+                screen.y = y() - screen.y;
+            }
+        }
+    }
+
+
     public void crossHair(int x, int y) {
         Point center = new Point();
         middle(center);
@@ -426,6 +501,8 @@ public class JoystickWidgets extends ViewPort {
         int half = size/2;
         screen.x = x;
         screen.y = y;
+
+        updateScreen(x,y);
 
         Paint paint = new Paint();
 
@@ -437,6 +514,9 @@ public class JoystickWidgets extends ViewPort {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(dp2px(3));
         mCanvas.drawCircle(center.x, center.y, radius(), paint);
+
+        drawRubber();
+
         paint.setStyle(Paint.Style.FILL);
         paint.setTextSize(dp2px(30));
         paint.setTextAlign(Paint.Align.CENTER);
@@ -452,6 +532,7 @@ public class JoystickWidgets extends ViewPort {
                 center.x + radius() + dp2px(3), center.y + dp2px(3), paint);
         drawOption(colors.foreground);
 
+        /*
         if (radius(x, y) > radius()) {
 
             Vibrator v = (Vibrator) ctx.getSystemService(Context.VIBRATOR_SERVICE);
@@ -466,10 +547,13 @@ public class JoystickWidgets extends ViewPort {
                     screen
             );
 
-            if(cartesian.x < 0) {
+            if (cartesian.x < 0) {
                 screen.x = x() - screen.x;
                 screen.y = y() - screen.y;
             }
+        }
+
+
             int sxs = screen.x - half;
             int sxe = screen.x + half;
             int sys = screen.y - half;
@@ -490,6 +574,7 @@ public class JoystickWidgets extends ViewPort {
         }
 
         mCanvas.drawLine(center.x, center.y, screen.x, screen.y, paint);
+ */
         powerUi();
     }
 

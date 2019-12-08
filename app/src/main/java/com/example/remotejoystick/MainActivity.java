@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //if(player != null) player.end();
+        if(player != null) player.end();
         //if(btman  != null) btman.kill();
     }
 

@@ -95,8 +95,8 @@ public class ViewPort extends View {
         Point cartesian = new Point(); toCartesian(src.x, src.y, cartesian);
         Point offset = new Point(); toCartesian(x, y, offset);
         Point traslated = new Point();
-        traslated.x += offset.x;
-        traslated.y += offset.y;
+        traslated.x = cartesian.x + offset.x;
+        traslated.y = cartesian.y + offset.y;
         Point screen = new Point();
         fromCartesian(traslated.x, traslated.y, screen);
         return screen;
