@@ -10,14 +10,14 @@ import static android.content.ContentValues.TAG;
 
 public class AudioPlayer extends Thread {
     protected volatile SoundBuffer mBuffer;
-    protected volatile AudioTrack mAudio;
+    protected static AudioTrack mAudio;
     protected boolean kill;
     protected int frame;
     protected int SAMPLERATE = 44100;
 
     public void end() { kill = true; }
 
-    public void setup(SoundBuffer mb) {
+    public synchronized void setup(SoundBuffer mb) {
         frame = 0;
         mBuffer = mb;
         Process.setThreadPriority(Process.THREAD_PRIORITY_AUDIO);
@@ -42,7 +42,6 @@ public class AudioPlayer extends Thread {
             mAudio.play();
         } catch (Exception e) {
             e.printStackTrace();
-            setup(mb);
         }
 
         kill = false;
