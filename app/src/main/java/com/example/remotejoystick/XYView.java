@@ -9,9 +9,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static java.lang.Math.abs;
-import static java.lang.Math.log;
-import static java.lang.Math.round;
-
 
 public class XYView extends JoystickWidgets {
     protected Pallete colors;
@@ -19,7 +16,6 @@ public class XYView extends JoystickWidgets {
     protected Timer timer;
     protected boolean ignoreUpdate;
     protected boolean ignoreMove;
-    protected static SoundSynth audio;
     protected boolean stopRetraction;
     protected int lastPointerCount;
 
@@ -30,8 +26,8 @@ public class XYView extends JoystickWidgets {
         timer = new Timer();
         ignoreUpdate = false; retractTimer(500);
         ignoreMove = false;
-        audio = new SoundSynth(this, param);
-        audio.mute(false);
+        //audio = new SoundSynth(this, param);
+        //audio.mute(false);
         stopRetraction = true;
         lastPointerCount = 0;
     }
@@ -50,7 +46,7 @@ public class XYView extends JoystickWidgets {
         canvas.drawBitmap(mBitmap,0 ,0, mBitmapPaint);
         //canvas.restore();
     }
-
+/*
     protected  void audioSend() {
         int fx= param.getLogMode()?
                 30 + abs(round(uPow() * 80 / param.getPower())):
@@ -63,9 +59,7 @@ public class XYView extends JoystickWidgets {
             audio.push(param.soundBuffer);
         }
     }
-
-
-
+*/
 
     protected synchronized void command(String cmd) {
         param.sendStream.add(cmd);
@@ -167,10 +161,11 @@ public class XYView extends JoystickWidgets {
                     }
                     crossHair(movex, movey);
                     if(movex == center.x && movey == center.y) {
-                        param.soundBuffer.mute(true);
+                        param.setMute(true);
+                    } else {
+                        param.setMute(false);
                     }
 
-                    audioSend();
                     command();
                     invalidate();
                 }
@@ -229,8 +224,7 @@ public class XYView extends JoystickWidgets {
                     ox = x;
                     oy = y;
                     ignoreMove = false;
-                    param.soundBuffer.mute(!param.getSound());
-                    audioSend();
+                    param.setMute(false);
                 } else {
                     ignoreMove = true;
                     drawOptionB();
@@ -241,7 +235,7 @@ public class XYView extends JoystickWidgets {
                 if(!ignoreMove) {
                     rubberCtrl(x, y);
                     invalidate();
-                    audioSend();
+                    param.setMute(false);
                 }
                 break;
             case MotionEvent.ACTION_UP:

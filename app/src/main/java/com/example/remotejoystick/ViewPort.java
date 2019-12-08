@@ -17,6 +17,7 @@ public class ViewPort extends View {
     protected AppParameters param;
 
     public void setParams(AppParameters p) { param = p;}
+    public AppParameters getParam() { return param; }
 
     protected int x() {
         Point size = new Point();

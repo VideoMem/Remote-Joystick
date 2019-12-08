@@ -22,7 +22,11 @@ public class AppParameters extends Application {
     protected boolean logMode;
     protected double logAmount;
     protected boolean exitAll;
+    protected boolean mute;
 
+
+    public void setMute(boolean m) { mute = m; }
+    public boolean getMute() { return mute; }
     public void setExitAll(boolean flag) { exitAll = flag; }
     public boolean getExitAll() { return exitAll; }
     public void setLogAmount(double v) { logAmount = v; }

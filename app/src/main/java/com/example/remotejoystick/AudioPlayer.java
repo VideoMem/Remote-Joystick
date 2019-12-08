@@ -8,18 +8,24 @@ import android.util.Log;
 
 import static android.content.ContentValues.TAG;
 
-public class AudioPlayer extends Thread {
-    protected volatile SoundBuffer mBuffer;
+public class AudioPlayer extends SoundSynth {
     protected static AudioTrack mAudio;
     protected boolean kill;
     protected int frame;
-    protected int SAMPLERATE = 44100;
+
+    protected XYView ref;
 
     public void end() { kill = true; }
 
-    public synchronized void setup(SoundBuffer mb) {
+    public AudioPlayer(XYView ref) {
+        super(ref);
+        setup();
+    }
+
+    public synchronized void setup() {
+        mBuffer = new SoundBuffer();
+        mute(false);
         frame = 0;
-        mBuffer = mb;
         Process.setThreadPriority(Process.THREAD_PRIORITY_AUDIO);
         int buffsize = AudioTrack.getMinBufferSize(
                 SAMPLERATE,
@@ -35,7 +41,7 @@ public class AudioPlayer extends Thread {
                 AudioTrack.MODE_STREAM
         );
         mBuffer.init(buffsize, SAMPLERATE);
-
+        init();
 
         try {
             mAudio.stop();
@@ -45,11 +51,13 @@ public class AudioPlayer extends Thread {
         }
 
         kill = false;
+
         Log.d("AudioPlayer", "Audio Thread started");
     }
 
     protected void play() {
         try {
+            send();
             short[] read = mBuffer.read();
             if(mBuffer.getReadSize() > 0) {
                 mAudio.play();

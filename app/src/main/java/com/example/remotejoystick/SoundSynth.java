@@ -5,8 +5,8 @@ import static java.lang.Math.round;
 import static java.lang.Math.sin;
 import static java.lang.Math.abs;
 
-public class SoundSynth  {
-
+public class SoundSynth extends Thread {
+    protected final int SAMPLERATE = 44100;
     protected short[] mSound;
     protected static XYView ref;
     protected static SoundBuffer mBuffer;
@@ -17,11 +17,25 @@ public class SoundSynth  {
         mSound = new short[mBuffer.getBuffsize() * 2];
     }
 
-    public SoundSynth(XYView xy, AppParameters param) {
-        ref = xy;
-        mBuffer = new SoundBuffer();
-        mBuffer.init(param.soundBuffer.getBuffsize(), param.soundBuffer.getSAMPLERATE());
-        init();
+    public SoundSynth(XYView r) {
+        ref = r;
+    }
+
+    protected void send() {
+        AppParameters param = ref.getParam();
+        int fx= param.getLogMode()?
+                30 + abs(round(ref.uPow() * 80 / param.getPower())):
+                30 + abs(round(ref.logCorrection(ref.uPow()) * 80 / param.getPower()));
+        int fy= param.getLogMode() ?
+                30 + abs(round(ref.vPow() * 80 / param.getPower())):
+                30 + abs(round(ref.logCorrection(ref.vPow()) * 80 / param.getPower()));
+        if(param.getSound() && !param.getMute()) {
+            mute(false);
+            play(fx, fy);
+        } else {
+            mute(true);
+        }
+
     }
 
     protected double omega(int freq) {

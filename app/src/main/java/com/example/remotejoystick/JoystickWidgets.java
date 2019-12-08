@@ -42,6 +42,7 @@ public class JoystickWidgets extends ViewPort {
     Typeface hd44780;
     Picture tractor;
     Picture caterpillar;
+    Picture speaker;
 
     public JoystickWidgets(Context context, AppParameters p)  {
         super(context, p);
@@ -57,12 +58,15 @@ public class JoystickWidgets extends ViewPort {
         try {
             SVG tr = SVG.getFromResource(getContext().getResources(), R.raw.tractor);
             SVG cat = SVG.getFromResource(getContext().getResources(), R.raw.caterpillar);
+            SVG spkr = SVG.getFromResource(getContext().getResources(), R.raw.speaker);
             RenderOptions renderOptions = RenderOptions.create();
             renderOptions.css(String.format("* { fill: %s; }", colors.foreground));
             cat.setRenderDPI(dp2px(8));
             caterpillar = cat.renderToPicture(dp2px(30),dp2px(10), renderOptions);
             tr.setRenderDPI(dp2px(5));
             tractor = tr.renderToPicture(dp2px(30),dp2px(10), renderOptions);
+            spkr.setRenderDPI(dp2px(8));
+            speaker = spkr.renderToPicture(dp2px(30), dp2px(10), renderOptions);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -290,6 +294,18 @@ public class JoystickWidgets extends ViewPort {
         }
     }
 
+    public void drawSpeaker() {
+        int left = dp2px(240);
+        int top  = dp2px(12);
+        Rect dst = new Rect(
+                left,
+                top,
+                left + speaker.getWidth(),
+                top + speaker.getHeight()
+        );
+
+        mCanvas.drawPicture(speaker, dst);
+    }
 
     public void icons() {
         if(param.getCaterpillar()) {
@@ -298,6 +314,8 @@ public class JoystickWidgets extends ViewPort {
         } else {
             drawTruck();
         }
+        if(param.getSound())
+            drawSpeaker();
     }
 
     protected double logValue(int x) {

@@ -52,8 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(player == null) {
             //player.end();
-            player = new AudioPlayer();
-            player.setup(params.soundBuffer);
+            player = new AudioPlayer(xy);
             player.start();
         }
     }
@@ -61,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(player != null) player.end();
+        //if(player != null) player.end();
         //if(btman  != null) btman.kill();
     }
 
