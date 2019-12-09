@@ -216,6 +216,76 @@ public class JoystickWidgets extends ViewPort {
         mCanvas.drawCircle(screen.x - dp2px(10), screen.y - dp2px(10), radius() / 9, paint);
     }
 
+    public void gyroPitch() {
+        Point center = new Point();
+        middle(center);
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(Color.parseColor(colors.foreground));
+        paint.setStrokeWidth(dp2px(3));
+        int radius = radius() / 4;
+
+        Point bottomLeft = new Point();
+        bottomLeft.x = center.x - radius /2;
+        bottomLeft.y = center.y;
+        Point bottomRight = new Point();
+        bottomRight.x = center.x + radius /2;
+        bottomRight.y = center.y;
+
+        //360 2p
+        //a   x
+        double slipL = (param.getGyroPitch() * PI /180) - PI /4;
+        double slipR = (param.getGyroPitch() * PI /180) + PI * 3/4;
+        Point L = rotate(bottomLeft, bottomLeft, slipL);
+        Point R = rotate(bottomLeft, bottomLeft, slipR);
+        Point M = rotate(bottomRight, bottomRight, slipL);
+        Point S = rotate(bottomRight, bottomRight, slipR);
+
+        Point topRight = traslate(R, x() - dp2px(60), dp2px(100));
+        Point topLeft  = traslate(L, x() - dp2px(60), dp2px(100));
+        Point topS     = traslate(S, x() - dp2px(60), dp2px(100));
+        Point topM     = traslate(M, x() - dp2px(60), dp2px(100));
+
+        mCanvas.drawLine(topLeft.x, topLeft.y, topM.x, topM.y, paint);
+        //mCanvas.drawLine(topM.x, topM.y, topS.x, topS.y, paint);
+
+    }
+
+    public void gyroRoll() {
+        Point center = new Point();
+        middle(center);
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(Color.parseColor(colors.foreground));
+        paint.setStrokeWidth(dp2px(3));
+        int radius = radius() / 4;
+
+        Point bottomLeft = new Point();
+        bottomLeft.x = center.x - radius /2;
+        bottomLeft.y = center.y;
+        Point bottomRight = new Point();
+        bottomRight.x = center.x + radius /2;
+        bottomRight.y = center.y;
+
+        //360 2p
+        //a   x
+        double slipL = (param.getGyroRoll() * PI /180) - PI /4;
+        double slipR = (param.getGyroRoll() * PI /180) + PI * 3/4;
+        Point L = rotate(bottomLeft, bottomLeft, slipL);
+        Point R = rotate(bottomLeft, bottomLeft, slipR);
+        Point M = rotate(bottomRight, bottomRight, slipL);
+        Point S = rotate(bottomRight, bottomRight, slipR);
+
+        Point topRight = traslate(R, dp2px(60), dp2px(100));
+        Point topLeft  = traslate(L, dp2px(60), dp2px(100));
+        Point topS     = traslate(S, dp2px(60), dp2px(100));
+        Point topM     = traslate(M, dp2px(60), dp2px(100));
+
+        mCanvas.drawLine(topLeft.x, topLeft.y, topM.x, topM.y, paint);
+        //mCanvas.drawLine(topM.x, topM.y, topS.x, topS.y, paint);
+
+    }
+
     public void shaft() {
         Point center = new Point();
         middle(center);
@@ -411,6 +481,8 @@ public class JoystickWidgets extends ViewPort {
                     paint);
         sphere();
         icons();
+        gyroPitch();
+        gyroRoll();
     }
 
     public void rubberCtrl(int x, int y) {
@@ -479,7 +551,7 @@ public class JoystickWidgets extends ViewPort {
             idx = i / 100;
             dx = (double) (screen.x - center.x) * j / 3000;
             dy = (double) (screen.y - center.y) * j / 3000;
-            Log.d("idx:", String.format("%d\n", idx));
+            //Log.d("idx:", String.format("%d\n", idx));
             Paint selected = new Paint(idx % 2 == 0? back: fore);
             pow = round(0xFF * (double) i / 1000);
             pos = (double) radius() * (double) logCorrection((int) pow) / 0xFF;

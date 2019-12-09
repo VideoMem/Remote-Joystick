@@ -97,7 +97,7 @@ public class SoundBuffer {
         if (!mute) {
             if(i > 0) return read;
             write(last);
-            //return read();
+            return read();
         }
         return silence;
     }

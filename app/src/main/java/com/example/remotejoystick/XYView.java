@@ -117,9 +117,9 @@ public class XYView extends JoystickWidgets {
         final Runnable runnableUpdate = new Runnable() {
             public void run() {
                 if(param.showCoordinates()) {
-                    //crossHair(movex, movey);
-                    //invalidate();
-                    //refreshTimer(300);
+                    crossHair(movex, movey);
+                    invalidate();
+                    refreshTimer(300);
                 }
             }
         };

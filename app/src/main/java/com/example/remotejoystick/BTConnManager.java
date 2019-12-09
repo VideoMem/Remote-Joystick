@@ -16,6 +16,7 @@ import static android.os.Process.setThreadPriority;
 import static java.lang.System.arraycopy;
 
 public class BTConnManager extends Thread {
+    private final int readTimeout = 3000;
     private static AppParameters param;
     private static BluetoothSocket btSocket = null;
     private static BluetoothAdapter myBluetooth = null;
@@ -25,6 +26,7 @@ public class BTConnManager extends Thread {
     private int failCount;
     private String lastCmd;
     private static String lastSucessfulAddr = null;
+    private long lastRead;
 
     public void kill() { kill=true; }
 
@@ -35,6 +37,7 @@ public class BTConnManager extends Thread {
         parser = new RCProtocol();
         lastCmd = parser.nullCmd();
         failCount = 0;
+        lastRead = 0;
     }
 
     BTConnManager(AppParameters p) { setup(p); }
@@ -98,6 +101,7 @@ public class BTConnManager extends Thread {
                     msg = new String(recv, 0, bytes);
                     Log.d("Message", msg);
                     failCount = 0;
+                    lastRead = System.currentTimeMillis();
                 } else {
                     ++failCount;
                     Log.d(TAG, "No input data this time");
@@ -109,7 +113,9 @@ public class BTConnManager extends Thread {
         return msg;
     }
 
-
+    private long millisLastRead() {
+        return  System.currentTimeMillis() - lastRead;
+    }
 
     static private void msg (String s) {
        // Toast.makeText(param.getApplicationContext(), s, Toast.LENGTH_LONG).show();
@@ -163,15 +169,21 @@ public class BTConnManager extends Thread {
         sendSignal("M5");
     }
 
+    public String poll() {
+        int lastFcount = failCount;
+        String msg = receiveSignal();
+        if(msg.length() > 0) {
+            param.setGyroPitch(parser.getGyroPitch(msg, param.getGyroPitch()));
+            param.setGyroRoll(parser.getGyroRoll(msg, param.getGyroRoll()));
+            param.voltage = parser.getBatteryVoltage(msg, param.voltage);
+        }
+        failCount = lastFcount;
+        return  msg;
+    }
+
     public void pollBattery() {
         sendSignal("B0");
-        String msg = receiveSignal();
-        if(msg.length() > 0) param.voltage = parser.getBatteryVoltage(msg);
-        if(failCount > 8) {
-            Log.d(TAG, "Too many TX failures, reconnecting ...");
-            disconnect();
-            connect();
-        }
+        String msg = poll();
     }
 
     @Override
@@ -190,20 +202,30 @@ public class BTConnManager extends Thread {
                         lastCmd = param.sendStream.remove();
                         lastTS = System.currentTimeMillis();
                         sendSignal(lastCmd);
-                        if(sent > 256) {
+                        //if(sent > 256) {
+                        //    pollBattery();
+                        //    sent = 0;
+                        //}
+
+                    } else {
+                        elapsed = System.currentTimeMillis() - lastTS;
+                        if (elapsed > 1000) {
                             pollBattery();
-                            sent = 0;
+                            lastTS = System.currentTimeMillis();
+                            sendSignal(lastCmd);
+                        } else {
+                            if(millisLastRead() > 50) poll();
                         }
-                    }
-                    elapsed = System.currentTimeMillis() - lastTS;
-                    if (elapsed > 1000) {
-                        pollBattery();
-                        lastTS = System.currentTimeMillis();
-                        sendSignal(lastCmd);
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+
+            if(millisLastRead() > readTimeout) {
+                Log.d(TAG, "TX timed out, reconnecting ...");
+                disconnect();
+                connect();
             }
         }
         disconnect();
