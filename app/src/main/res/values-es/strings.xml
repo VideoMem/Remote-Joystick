@@ -37,4 +37,5 @@
     <string name="SET_LINEAR">Lineal</string>
     <string name="SET_LOG">Logarítmico</string>
     <string name="JW_MAXPOWER">Potencia máxima: %#02X</string>
+    <string name="SET_AutoTraction">Control de tracción</string>
 </resources>

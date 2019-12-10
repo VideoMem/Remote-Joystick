@@ -4,6 +4,7 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Picture;
@@ -216,111 +217,43 @@ public class JoystickWidgets extends ViewPort {
         mCanvas.drawCircle(screen.x - dp2px(10), screen.y - dp2px(10), radius() / 9, paint);
     }
 
-    public void gyroPitch() {
+    protected void gyroWidget(String label, double angle, int dpx, int dpy, int proportion) {
         Point center = new Point();
         middle(center);
         Paint paint = new Paint();
-        paint.setStyle(Paint.Style.STROKE);
+        paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.parseColor(colors.foreground));
-        paint.setStrokeWidth(dp2px(3));
-        int radius = radius() / 4;
+        paint.setStrokeWidth(dp2px(1));
+        int radius = radius() / proportion;
 
-        Point bottomLeft = new Point();
-        bottomLeft.x = center.x - radius /2;
-        bottomLeft.y = center.y;
-        Point bottomRight = new Point();
-        bottomRight.x = center.x + radius /2;
-        bottomRight.y = center.y;
-
-        //360 2p
-        //a   x
-        double slipL = (param.getGyroPitch() * PI /180) - PI /4;
-        double slipR = (param.getGyroPitch() * PI /180) + PI * 3/4;
-        Point L = rotate(bottomLeft, bottomLeft, slipL);
-        Point R = rotate(bottomLeft, bottomLeft, slipR);
-        Point M = rotate(bottomRight, bottomRight, slipL);
-        Point S = rotate(bottomRight, bottomRight, slipR);
-
-        Point topRight = traslate(R, x() - dp2px(60), dp2px(100));
-        Point topLeft  = traslate(L, x() - dp2px(60), dp2px(100));
-        Point topS     = traslate(S, x() - dp2px(60), dp2px(100));
-        Point topM     = traslate(M, x() - dp2px(60), dp2px(100));
-
-        mCanvas.drawLine(topLeft.x, topLeft.y, topM.x, topM.y, paint);
-        //mCanvas.drawLine(topM.x, topM.y, topS.x, topS.y, paint);
-
+        Matrix mMatrix = new Matrix();
+        RectF bounds = new RectF();
+        RectF box = new RectF(-radius/2, -radius /2, radius/2, radius/2);
+        mMatrix.postRotate((float) angle, bounds.centerX(), bounds.centerY());
+        mMatrix.postTranslate(dp2px(dpx), dp2px(dpy));
+        Path subcircle = new Path();
+        subcircle.moveTo(-radius /2, 0);
+        subcircle.lineTo(radius / 2, 0);
+        subcircle.arcTo(box, 0F, 180F);
+        subcircle.transform(mMatrix);
+        mCanvas.drawPath(subcircle, paint);
+        paint.setTextSize(dp2px(15));
+        mCanvas.drawText(label, dp2px(dpx) - dp2px(60), dp2px(dpy) + dp2px(6), paint);
     }
 
 
-    public void gyroYaw() {
-        Point center = new Point();
-        middle(center);
-        Paint paint = new Paint();
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(Color.parseColor(colors.foreground));
-        paint.setStrokeWidth(dp2px(3));
-        int radius = radius() / 4;
-
-        Point bottomLeft = new Point();
-        bottomLeft.x = center.x - radius /2;
-        bottomLeft.y = center.y;
-        Point bottomRight = new Point();
-        bottomRight.x = center.x + radius /2;
-        bottomRight.y = center.y;
-
-        //360 2p
-        //a   x
-        double slipL = (param.getGyroYaw() * PI /180) - PI /4;
-        double slipR = (param.getGyroYaw() * PI /180) + PI * 3/4;
-        Point L = rotate(bottomLeft, bottomLeft, slipL);
-        Point R = rotate(bottomLeft, bottomLeft, slipR);
-        Point M = rotate(bottomRight, bottomRight, slipL);
-        Point S = rotate(bottomRight, bottomRight, slipR);
-
-        Point topRight = traslate(R, x() - dp2px(60), dp2px(140));
-        Point topLeft  = traslate(L, x() - dp2px(60), dp2px(140));
-        Point topS     = traslate(S, x() - dp2px(60), dp2px(140));
-        Point topM     = traslate(M, x() - dp2px(60), dp2px(140));
-
-        mCanvas.drawLine(topLeft.x, topLeft.y, topM.x, topM.y, paint);
-        //mCanvas.drawLine(topM.x, topM.y, topS.x, topS.y, paint);
-
+    public void gyroPitch() {
+        gyroWidget("Roll", param.getGyroPitch(),px2dp(x()) - 30, 110, 6);
     }
 
     public void gyroRoll() {
-        Point center = new Point();
-        middle(center);
-        Paint paint = new Paint();
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(Color.parseColor(colors.foreground));
-        paint.setStrokeWidth(dp2px(3));
-        int radius = radius() / 4;
-
-        Point bottomLeft = new Point();
-        bottomLeft.x = center.x - radius /2;
-        bottomLeft.y = center.y;
-        Point bottomRight = new Point();
-        bottomRight.x = center.x + radius /2;
-        bottomRight.y = center.y;
-
-        //360 2p
-        //a   x
-        double slipL = (param.getGyroRoll() * PI /180) - PI /4;
-        double slipR = (param.getGyroRoll() * PI /180) + PI * 3/4;
-        Point L = rotate(bottomLeft, bottomLeft, slipL);
-        Point R = rotate(bottomLeft, bottomLeft, slipR);
-        Point M = rotate(bottomRight, bottomRight, slipL);
-        Point S = rotate(bottomRight, bottomRight, slipR);
-
-        Point topRight = traslate(R, dp2px(60), dp2px(100));
-        Point topLeft  = traslate(L, dp2px(60), dp2px(100));
-        Point topS     = traslate(S, dp2px(60), dp2px(100));
-        Point topM     = traslate(M, dp2px(60), dp2px(100));
-
-        mCanvas.drawLine(topLeft.x, topLeft.y, topM.x, topM.y, paint);
-        //mCanvas.drawLine(topM.x, topM.y, topS.x, topS.y, paint);
-
+        gyroWidget("Pitch", param.getGyroRoll(), px2dp(x()) - 30, 80, 6);
     }
+
+    public void gyroYaw() {
+        gyroWidget("Yaw", param.getGyroYaw(),  px2dp(x()) - 30, 140, 6);
+    }
+
 
     public void shaft() {
         Point center = new Point();

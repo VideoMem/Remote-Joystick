@@ -23,15 +23,18 @@ public class AppParameters extends Application {
     protected double logAmount;
     protected boolean exitAll;
     protected boolean mute;
+    protected boolean autoTraction;
 
-    public volatile double gyroPitch;
-    public volatile double gyroRoll;
-    public volatile double gyroYaw;
+    public boolean getAutoTraction() { return autoTraction; }
+    public void setAutoTraction(boolean v) { autoTraction = v; }
 
-    public volatile double accPitch;
-    public volatile double accRoll;
-    public volatile double accYaw;
+    protected volatile double gyroPitch;
+    protected volatile double gyroRoll;
+    protected volatile double gyroYaw;
 
+    protected volatile double accPitch;
+    protected volatile double accRoll;
+    protected volatile double accYaw;
 
     public double getGyroPitch() { return gyroPitch; }
     public double getGyroRoll()  { return gyroRoll; }
@@ -72,6 +75,7 @@ public class AppParameters extends Application {
         setLogMode(true);
         setLogAmount(50);
         setExitAll(false);
+        setAutoTraction(true);
     }
 
     public AppParameters() {

@@ -68,5 +68,6 @@
     <string name="SET_LINEAR">Linear</string>
     <string name="SET_LOG">Logarithmic</string>
     <string name="JW_MAXPOWER">Maximum power: %#02X</string>
+    <string name="SET_AutoTraction">Traction Control</string>
 
 </resources>

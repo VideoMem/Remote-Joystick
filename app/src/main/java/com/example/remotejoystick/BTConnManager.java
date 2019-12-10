@@ -182,6 +182,7 @@ public class BTConnManager extends Thread {
         sendSignal("B0");
         String msg = receiveSignal();
         parseResponse(msg);
+        if(param.getAutoTraction()) sendSignal("M21"); else sendSignal("M20");
     }
 
     public void pollGyro() {

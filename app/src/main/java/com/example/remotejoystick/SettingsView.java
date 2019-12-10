@@ -31,6 +31,7 @@ public class SettingsView extends AppCompatActivity
     protected Switch soundEnable;
     protected Switch caterpillarEnabled;
     protected Switch logMode;
+    protected Switch tractionControl;
     protected SeekBar logComponent;
 
     @Override
@@ -77,6 +78,9 @@ public class SettingsView extends AppCompatActivity
             case R.id.logScale:
                 param.setLogMode(isChecked);
                 break;
+            case R.id.trackAuto:
+                param.setAutoTraction(isChecked);
+                break;
         }
     }
 
@@ -110,7 +114,8 @@ public class SettingsView extends AppCompatActivity
         caterpillarEnabled.setOnCheckedChangeListener(this);
         logMode = findViewById(R.id.logScale);
         logMode.setOnCheckedChangeListener(this);
-
+        tractionControl = findViewById(R.id.trackAuto);
+        tractionControl.setOnCheckedChangeListener(this);
 
         read();
         TextView Device = findViewById(R.id.DevConfig);
@@ -133,6 +138,7 @@ public class SettingsView extends AppCompatActivity
         soundEnable.setChecked(param.getSound());
         caterpillarEnabled.setChecked(param.getCaterpillar());
         logMode.setChecked(param.getLogMode());
+        tractionControl.setChecked(param.getAutoTraction());
     }
 
     public void resetDialog() {

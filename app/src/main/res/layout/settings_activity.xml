@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ScrollView
-        android:id="@+id/autoFollow"
+        android:id="@+id/autoTraction"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
@@ -213,13 +213,13 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <Switch
-                android:id="@+id/autoauto"
+                android:id="@+id/trackAuto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
-                android:text="@string/SET_Automatic_line_follower"
+                android:text="@string/SET_AutoTraction"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <Button
