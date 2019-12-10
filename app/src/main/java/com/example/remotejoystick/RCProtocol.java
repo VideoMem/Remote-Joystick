@@ -31,6 +31,10 @@ public class RCProtocol {
         return getVal(raw, "O", def);
     }
 
+    public static double getYaw(String raw, double def) {
+        return getVal(raw, "P", def);
+    }
+
     public static double getAccPitch(String raw, double def) {
         return getVal(raw, "Q", def);
     }

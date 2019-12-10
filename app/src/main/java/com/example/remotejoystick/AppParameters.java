@@ -34,17 +34,17 @@ public class AppParameters extends Application {
 
 
     public double getGyroPitch() { return gyroPitch; }
-    public double getGyroRoll() { return gyroRoll; }
-    public double getGyroYaw() { return gyroYaw; }
-    public double getAccPitch() { return accPitch; }
-    public double getAccRoll() { return  accRoll; }
-    public double getAccYaw() { return accYaw; }
+    public double getGyroRoll()  { return gyroRoll; }
+    public double getGyroYaw()   { return gyroYaw; }
+    public double getAccPitch()  { return accPitch; }
+    public double getAccRoll()   { return  accRoll; }
+    public double getAccYaw()    { return accYaw; }
     public synchronized void setGyroPitch(double v) { gyroPitch = v; }
-    public synchronized void setAccPitch(double v) { accPitch = v; }
-    public synchronized void setGyroRoll(double v) { gyroRoll = v; }
-    public synchronized void setAccRoll(double v) { accRoll = v; }
-    public synchronized void setGyroYaw(double v) { gyroYaw = v; }
-    public synchronized void setAccYaw(double v) { accYaw = v; }
+    public synchronized void setAccPitch(double v)  { accPitch = v; }
+    public synchronized void setGyroRoll(double v)  { gyroRoll = v; }
+    public synchronized void setAccRoll(double v)   { accRoll = v; }
+    public synchronized void setGyroYaw(double v)   { gyroYaw = v; }
+    public synchronized void setAccYaw(double v)    { accYaw = v; }
 
     public void setMute(boolean m) { mute = m; }
     public boolean getMute() { return mute; }

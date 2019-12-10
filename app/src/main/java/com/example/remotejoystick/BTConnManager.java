@@ -173,6 +173,7 @@ public class BTConnManager extends Thread {
         if(msg.length() > 0) {
             param.setGyroPitch(parser.getGyroPitch(msg, param.getGyroPitch()));
             param.setGyroRoll(parser.getGyroRoll(msg, param.getGyroRoll()));
+            param.setGyroYaw(parser.getYaw(msg, param.getGyroYaw()));
             param.voltage = parser.getBatteryVoltage(msg, param.voltage);
         }
     }
@@ -209,7 +210,7 @@ public class BTConnManager extends Thread {
                         sendSignal(lastCmd);
                         lastRead = System.currentTimeMillis();
                     } else {
-                        if (System.currentTimeMillis() - lastApoll > 100){
+                        if (System.currentTimeMillis() - lastApoll > 200){
                             pollGyro();
                             lastApoll = System.currentTimeMillis();
                         }
