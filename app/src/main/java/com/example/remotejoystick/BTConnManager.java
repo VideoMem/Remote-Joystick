@@ -64,11 +64,11 @@ public class BTConnManager extends Thread {
             disconnect();
             new ConnectBT().execute();
             elapsed = 0; lastTS = System.currentTimeMillis();
-            while(elapsed < 5000) {
+            while(elapsed < readTimeout) {
                 elapsed = System.currentTimeMillis() - lastTS;
             }
         } while(lastSucessfulAddr == param.getAddress() && !param.getBtStatus());
-
+        lastRead = System.currentTimeMillis();
     }
 
     private void sendSignal(String msg) {
@@ -78,9 +78,9 @@ public class BTConnManager extends Thread {
                 byte[] sendArr = new byte[size];
                 arraycopy(msg.getBytes(), 0, sendArr, 0, msg.length());
                 sendArr[msg.length()] = 13; //adds enter
-                if(btSocket.isConnected())
+                if(btSocket.isConnected()) {
                     btSocket.getOutputStream().write(sendArr);
-                else
+                } else
                     connect();
             } catch (IOException e) {
                 msg("Error writing to socket");
@@ -104,7 +104,7 @@ public class BTConnManager extends Thread {
                     lastRead = System.currentTimeMillis();
                 } else {
                     ++failCount;
-                    Log.d(TAG, "No input data this time");
+                   // Log.d(TAG, "No input data this time");
                 }
             } catch (IOException e) {
                 msg("Error reading from socket");
@@ -169,63 +169,66 @@ public class BTConnManager extends Thread {
         sendSignal("M5");
     }
 
-    public String poll() {
-        int lastFcount = failCount;
-        String msg = receiveSignal();
+    public void parseResponse(String msg) {
         if(msg.length() > 0) {
             param.setGyroPitch(parser.getGyroPitch(msg, param.getGyroPitch()));
             param.setGyroRoll(parser.getGyroRoll(msg, param.getGyroRoll()));
             param.voltage = parser.getBatteryVoltage(msg, param.voltage);
         }
-        failCount = lastFcount;
-        return  msg;
     }
 
     public void pollBattery() {
         sendSignal("B0");
-        String msg = poll();
+        String msg = receiveSignal();
+        parseResponse(msg);
+    }
+
+    public void pollGyro() {
+        sendSignal("M10");
+        String msg = receiveSignal();
+        parseResponse(msg);
+        sendSignal("M0");
+        msg = receiveSignal();
+        parseResponse(msg);
     }
 
     @Override
     public void run() {
-        long elapsed;
-        long lastTS = 0;
         long sent = 0;
-
+        long lastBpoll=0;
+        long lastApoll=0;
         sendControlModeDecimal();
 
         while(!kill) {
             try {
                 if(param.getBtStatus()) {
+
                     if (param.sendStream.size() > 0) {
                         sent+=param.sendStream.size();
                         lastCmd = param.sendStream.remove();
-                        lastTS = System.currentTimeMillis();
                         sendSignal(lastCmd);
-                        //if(sent > 256) {
-                        //    pollBattery();
-                        //    sent = 0;
-                        //}
-
+                        lastRead = System.currentTimeMillis();
                     } else {
-                        elapsed = System.currentTimeMillis() - lastTS;
-                        if (elapsed > 1000) {
-                            pollBattery();
-                            lastTS = System.currentTimeMillis();
-                            sendSignal(lastCmd);
-                        } else {
-                            if(millisLastRead() > 50) poll();
+                        if (System.currentTimeMillis() - lastApoll > 100){
+                            pollGyro();
+                            lastApoll = System.currentTimeMillis();
                         }
+                    }
+
+                    if (System.currentTimeMillis() - lastBpoll > 1000) {
+                        pollBattery();
+                        sendSignal(lastCmd);
+                        lastBpoll = System.currentTimeMillis();
+                    }
+
+                    if(millisLastRead() > readTimeout) {
+                        Log.d(TAG, "TX timed out, reconnecting ...");
+                        disconnect();
+                        connect();
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-            }
-
-            if(millisLastRead() > readTimeout) {
-                Log.d(TAG, "TX timed out, reconnecting ...");
-                disconnect();
-                connect();
             }
         }
         disconnect();
