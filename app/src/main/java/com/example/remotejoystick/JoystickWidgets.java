@@ -251,7 +251,7 @@ public class JoystickWidgets extends ViewPort {
     }
 
     public void gyroYaw() {
-        gyroWidget("Yaw", param.getGyroYaw(),  px2dp(x()) - 30, 140, 6);
+        gyroWidget("Yaw", -param.getGyroYaw(),  px2dp(x()) - 30, 140, 6);
     }
 
 
