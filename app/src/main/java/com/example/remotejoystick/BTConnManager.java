@@ -77,6 +77,7 @@ public class BTConnManager extends Thread {
                 elapsed = System.currentTimeMillis() - lastTS;
             }
         } while(lastSucessfulAddr == param.getAddress() && !param.getBtStatus() && retries > 0);
+        if(retries == 0) kill();
         lastRead = System.currentTimeMillis();
     }
 

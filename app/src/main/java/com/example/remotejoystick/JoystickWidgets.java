@@ -83,10 +83,9 @@ public class JoystickWidgets extends ViewPort {
 
 
     public void reset() {
-        Point size = new Point();
-        getSize(size);
-        movex = size.x /2;
-        movey = size.y /2;
+        middle(screen);
+        movex = screen.x;
+        movey = screen.y;
         ox = movex;
         oy = movey;
         read();
@@ -596,49 +595,6 @@ public class JoystickWidgets extends ViewPort {
                 center.x + radius() + dp2px(3), center.y + dp2px(3), paint);
         drawOption(colors.foreground);
 
-        /*
-        if (radius(x, y) > radius()) {
-
-            Vibrator v = (Vibrator) ctx.getSystemService(Context.VIBRATOR_SERVICE);
-            if (System.currentTimeMillis() % 100 < 50 && param.showCoordinates())
-                v.vibrate(10);
-
-            Point cartesian = new Point();
-            toCartesian(x, y, cartesian);
-            fromCartesian(
-                    (int) round(radius() * cos(angle(x, y))),
-                    (int) round(radius() * sin(angle(x, y))),
-                    screen
-            );
-
-            if (cartesian.x < 0) {
-                screen.x = x() - screen.x;
-                screen.y = y() - screen.y;
-            }
-        }
-
-
-            int sxs = screen.x - half;
-            int sxe = screen.x + half;
-            int sys = screen.y - half;
-            int sye = screen.y + half;
-            paint.setStrokeWidth(dp2px(3));
-            mCanvas.drawLine(sxs, screen.y, sxe, screen.y, paint);
-            mCanvas.drawLine(screen.x, sys, screen.x, sye, paint);
-        } else {
-            int xs = x - half;
-            int xe = x + half;
-            int ys = y - half;
-            int ye = y + half;
-
-            //crosshair
-            paint.setStrokeWidth(dp2px(1));
-            mCanvas.drawLine(xs, y, xe, y, paint);
-            mCanvas.drawLine(x, ys, x, ye, paint);
-        }
-
-        mCanvas.drawLine(center.x, center.y, screen.x, screen.y, paint);
- */
         powerUi();
     }
 

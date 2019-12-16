@@ -18,6 +18,7 @@ public class XYView extends JoystickWidgets {
     protected boolean ignoreMove;
     protected boolean stopRetraction;
     protected int lastPointerCount;
+    protected boolean firstDraw;
 
     public XYView(Context context, AppCompatActivity ref, AppParameters p) {
         super(context, p);
@@ -31,6 +32,7 @@ public class XYView extends JoystickWidgets {
         //audio.mute(false);
         stopRetraction = true;
         lastPointerCount = 0;
+        firstDraw = true;
     }
 
     @Override
@@ -45,22 +47,9 @@ public class XYView extends JoystickWidgets {
     {
         super.onDraw(canvas);
         canvas.drawBitmap(mBitmap,0 ,0, mBitmapPaint);
+        if(firstDraw) { reset(); firstDraw = false; }
         //canvas.restore();
     }
-/*
-    protected  void audioSend() {
-        int fx= param.getLogMode()?
-                30 + abs(round(uPow() * 80 / param.getPower())):
-                30 + abs(round(logCorrection(uPow()) * 80 / param.getPower()));
-        int fy= param.getLogMode() ?
-                30 + abs(round(vPow() * 80 / param.getPower())):
-                30 + abs(round(logCorrection(vPow()) * 80 / param.getPower()));
-        if(param.getSound()) {
-            audio.play(fx, fy);
-            audio.push(param.soundBuffer);
-        }
-    }
-*/
 
     protected synchronized void command(String cmd) {
         param.sendStream.add(cmd);
@@ -121,7 +110,7 @@ public class XYView extends JoystickWidgets {
                 if(param.showCoordinates()) {
                     crossHair(movex, movey);
                     invalidate();
-                    refreshTimer(100);
+                    refreshTimer(500);
                 }
             }
         };
