@@ -73,6 +73,15 @@ public class JoystickWidgets extends ViewPort {
         }
     }
 
+    public void read() {
+        animSampler = 10;
+        setMaxPower(param.getPower());
+        setSens(param.getSensitivity());
+        setRetractDelay(param.getRetractDelay());
+        setRetractSpeed(dp2px(param.getRetractSpeed()));
+    }
+
+
     public void reset() {
         Point size = new Point();
         getSize(size);
@@ -80,12 +89,7 @@ public class JoystickWidgets extends ViewPort {
         movey = size.y /2;
         ox = movex;
         oy = movey;
-        animSampler = 10;
-        setMaxPower(param.getPower());
-        setSens(param.getSensitivity());
-        setRetractDelay(param.getRetractDelay());
-        setRetractSpeed(dp2px(param.getRetractSpeed()));
-
+        read();
     }
 
     public int getMaxPower() { return maxPower; }

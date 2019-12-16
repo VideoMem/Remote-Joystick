@@ -38,4 +38,8 @@
     <string name="SET_LOG">Logarítmico</string>
     <string name="JW_MAXPOWER">Potencia máxima: %#02X</string>
     <string name="SET_AutoTraction">Control de tracción</string>
+    <string name="SET_YAWGAIN">Ganancia P del Yaw</string>
+    <string name="title_activity_serial_monitor">Monitor Serial</string>
+    <string name="SET_BUILD">Número de compilación %s</string>
+    <string name="SET_UNAVAILABLE_BUILD">no disponible</string>
 </resources>

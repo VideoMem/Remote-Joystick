@@ -6,6 +6,9 @@ import android.bluetooth.BluetoothSocket;
 import android.os.AsyncTask;
 import android.os.Process;
 import android.util.Log;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -13,6 +16,8 @@ import java.util.UUID;
 
 import static android.content.ContentValues.TAG;
 import static android.os.Process.setThreadPriority;
+import static com.example.remotejoystick.RCProtocol.nullCmd;
+import static java.lang.Math.round;
 import static java.lang.System.arraycopy;
 
 public class BTConnManager extends Thread {
@@ -21,21 +26,21 @@ public class BTConnManager extends Thread {
     private static BluetoothSocket btSocket = null;
     private static BluetoothAdapter myBluetooth = null;
     private static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    private boolean kill;
+    private static boolean kill;
     private RCProtocol parser;
     private int failCount;
     private String lastCmd;
     private static String lastSucessfulAddr = null;
     private long lastRead;
 
-    public void kill() { kill=true; }
+    public static void kill() { kill=true; }
 
     public void setup(AppParameters par) {
         param = par;
         kill = false;
         setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
         parser = new RCProtocol();
-        lastCmd = parser.nullCmd();
+        lastCmd = nullCmd();
         failCount = 0;
         lastRead = 0;
     }
@@ -46,7 +51,7 @@ public class BTConnManager extends Thread {
         if ( btSocket!=null ) {
             try {
                 failCount = 0;
-                btSocket.close();
+                while(btSocket.isConnected()) btSocket.close();
                 param.setBtStatus(false);
             } catch(IOException e) {
                 msg("Error closing socket");
@@ -57,17 +62,21 @@ public class BTConnManager extends Thread {
 
     public void connect() {
         param.sendStream.clear();
-        lastCmd = parser.nullCmd();
+        lastCmd = nullCmd();
         long lastTS;
         long elapsed;
+        int retries = 10;
         do {
             disconnect();
-            new ConnectBT().execute();
-            elapsed = 0; lastTS = System.currentTimeMillis();
-            while(elapsed < readTimeout) {
+            Log.d("Connect", "Starting new connection");
+            btConnect();
+            elapsed = 0;
+            lastTS = System.currentTimeMillis();
+            --retries;
+            while (!param.getBtStatus() && elapsed <  readTimeout) {
                 elapsed = System.currentTimeMillis() - lastTS;
             }
-        } while(lastSucessfulAddr == param.getAddress() && !param.getBtStatus());
+        } while(lastSucessfulAddr == param.getAddress() && !param.getBtStatus() && retries > 0);
         lastRead = System.currentTimeMillis();
     }
 
@@ -80,6 +89,7 @@ public class BTConnManager extends Thread {
                 sendArr[msg.length()] = 13; //adds enter
                 if(btSocket.isConnected()) {
                     btSocket.getOutputStream().write(sendArr);
+                    param.addSendStream(msg);
                 } else
                     connect();
             } catch (IOException e) {
@@ -102,6 +112,7 @@ public class BTConnManager extends Thread {
                     Log.d("Message", msg);
                     failCount = 0;
                     lastRead = System.currentTimeMillis();
+                    param.addRecvStream(msg);
                 } else {
                     ++failCount;
                    // Log.d(TAG, "No input data this time");
@@ -118,21 +129,27 @@ public class BTConnManager extends Thread {
     }
 
     static private void msg (String s) {
-       // Toast.makeText(param.getApplicationContext(), s, Toast.LENGTH_LONG).show();
+        try {
+            Toast.makeText(param.getApplicationContext(), s, Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Log.d("BTManager Exception","Can't toast");
+            e.printStackTrace();
+        }
     }
 
+    //private static class ConnectBT extends AsyncTask<Void, Void, Void> {
+        private boolean ConnectSuccess;
 
-    private static class ConnectBT extends AsyncTask<Void, Void, Void> {
-        private boolean ConnectSuccess = true;
-
-        @Override
+      //  @Override
         protected  void onPreExecute () {
             Log.d("Connecting", "please wait");
             msg("Connecting");
+            ConnectSuccess = true;
         }
 
-        @Override
-        protected Void doInBackground (Void... devices) {
+        //@Override
+        protected void btConnect() {
+            onPreExecute();
             try {
                 if ( btSocket==null || !param.getBtStatus() ) {
                     myBluetooth = BluetoothAdapter.getDefaultAdapter();
@@ -144,17 +161,18 @@ public class BTConnManager extends Thread {
             } catch (IOException e) {
                 ConnectSuccess = false;
             }
-            return null;
+            onPostExecute();
         }
 
-        @Override
-        protected void onPostExecute (Void result) {
-            super.onPostExecute(result);
+        //@Override
+        protected void onPostExecute () {
+          //  super.onPostExecute(result);
 
             if (!ConnectSuccess) {
                 msg("Connection Failed");
                 Log.d(TAG, "Connection Failed. Is it a SPP Bluetooth? Try again.");
                 param.setBtStatus(false);
+            //    this.cancel(true);
             } else {
                 msg("Connected");
                 Log.d(TAG, "Connected!");
@@ -163,7 +181,7 @@ public class BTConnManager extends Thread {
             }
 
         }
-    }
+    //}
 
     public void sendControlModeDecimal() {
         sendSignal("M5");
@@ -178,11 +196,19 @@ public class BTConnManager extends Thread {
         }
     }
 
+    public void sendParameters() {
+        if(param.getAutoTraction()) {
+            sendSignal(String.format("M21S%d\n", round(param.getYawGain() * 100)));
+        } else
+            sendSignal("M20");
+    }
+
+
     public void pollBattery() {
         sendSignal("B0");
         String msg = receiveSignal();
         parseResponse(msg);
-        if(param.getAutoTraction()) sendSignal("M21"); else sendSignal("M20");
+        sendParameters();
     }
 
     public void pollGyro() {
@@ -204,9 +230,8 @@ public class BTConnManager extends Thread {
         while(!kill) {
             try {
                 if(param.getBtStatus()) {
-
                     if (param.sendStream.size() > 0) {
-                        sent+=param.sendStream.size();
+                        sent += param.sendStream.size();
                         lastCmd = param.sendStream.remove();
                         sendSignal(lastCmd);
                         lastRead = System.currentTimeMillis();
@@ -225,11 +250,12 @@ public class BTConnManager extends Thread {
 
                     if(millisLastRead() > readTimeout) {
                         Log.d(TAG, "TX timed out, reconnecting ...");
-                        disconnect();
+                        //disconnect();
                         connect();
                     }
                 }
             } catch (Exception e) {
+                Log.d("Command exception:", String.format("sendStream.size() %d", param.sendStream.size()));
                 e.printStackTrace();
             }
         }

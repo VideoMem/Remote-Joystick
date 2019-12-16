@@ -24,7 +24,8 @@ public class XYView extends JoystickWidgets {
         param = p;
         activity = ref;
         timer = new Timer();
-        ignoreUpdate = false; retractTimer(500);
+        ignoreUpdate = false;
+        //retractTimer(500);
         ignoreMove = false;
         //audio = new SoundSynth(this, param);
         //audio.mute(false);
@@ -66,6 +67,7 @@ public class XYView extends JoystickWidgets {
     }
 
     protected synchronized void command() {
+        read();
         if(param.sendStream.size() < param.getTxBuffSize())
             if (param.getCaterpillar()) {
                 if (!param.getLogMode()) {
@@ -119,7 +121,7 @@ public class XYView extends JoystickWidgets {
                 if(param.showCoordinates()) {
                     crossHair(movex, movey);
                     invalidate();
-                    refreshTimer(300);
+                    //refreshTimer(300);
                 }
             }
         };

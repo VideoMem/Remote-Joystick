@@ -12,6 +12,14 @@ public class MainActivity extends AppCompatActivity {
     protected static AudioPlayer player = null;
     protected static BTConnManager btman = null;
 
+
+    protected void reBlue() {
+        if(btman != null) btman.kill();
+        btman = new BTConnManager(params);
+        btman.connect();
+        btman.start();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,11 +42,13 @@ public class MainActivity extends AppCompatActivity {
             ) {
             params.setAddress(newint.getStringExtra(ListBTDevices.EXTRA_ADDRESS));
             params.setName(newint.getStringExtra("NAME"));
-            if(btman != null) btman.kill();
-            btman = new BTConnManager(params);
-            btman.connect();
-            btman.start();
         }
+
+
+        if(params.getAddress() != null) {
+            reBlue();
+        }
+
         if(xy == null) {
             xy = new XYView(this, this, params);
         } else {
@@ -46,15 +56,14 @@ public class MainActivity extends AppCompatActivity {
                 ((ViewGroup)xy.getParent()).removeView(xy); // <- fix
             }
         }
+
         xy.setParams(params);
         setContentView(xy);
         xy.refreshTimer(100);
 
-        if(player == null) {
-            //player.end();
-            player = new AudioPlayer(xy);
-            player.start();
-        }
+        if(player != null) player.end();
+        player = new AudioPlayer(xy);
+        player.start();
     }
 
     @Override

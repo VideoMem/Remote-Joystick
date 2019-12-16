@@ -28,7 +28,7 @@
     <string name="JW_connected">%s connected (txq: %d)</string>
     <string name="JW_BatteryVoltage">BAT: %02.02fV</string>
     <string name="JW_no_device">No device connected</string>
-    
+
     <!-- Settings -->
     <string name="SET_no_device">No device selected</string>
     <string name="SET_param_reset_conf">Confirm parameters reset</string>
@@ -69,5 +69,12 @@
     <string name="SET_LOG">Logarithmic</string>
     <string name="JW_MAXPOWER">Maximum power: %#02X</string>
     <string name="SET_AutoTraction">Traction Control</string>
+
+    <string name="title_activity_serial_monitor">Serial Monitor</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="SET_YAWGAIN">Yaw P gain</string>
+    <string name="SET_BUILD">Build number %s</string>
+    <string name="SET_UNAVAILABLE_BUILD">not available</string>
 
 </resources>

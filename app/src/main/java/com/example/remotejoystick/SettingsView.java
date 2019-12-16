@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -33,6 +34,8 @@ public class SettingsView extends AppCompatActivity
     protected Switch logMode;
     protected Switch tractionControl;
     protected SeekBar logComponent;
+    protected EditText yawGain;
+    protected TextView version;
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
@@ -116,6 +119,8 @@ public class SettingsView extends AppCompatActivity
         logMode.setOnCheckedChangeListener(this);
         tractionControl = findViewById(R.id.trackAuto);
         tractionControl.setOnCheckedChangeListener(this);
+        yawGain = findViewById(R.id.yawGain);
+        version = findViewById(R.id.appVersion);
 
         read();
         TextView Device = findViewById(R.id.DevConfig);
@@ -126,6 +131,14 @@ public class SettingsView extends AppCompatActivity
         else
             Device.setText(this.getString(R.string.SET_no_device));
     }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        submit();
+    }
+
 
     protected void read() {
         double sns = param.getSensitivity() * 10;
@@ -139,6 +152,12 @@ public class SettingsView extends AppCompatActivity
         caterpillarEnabled.setChecked(param.getCaterpillar());
         logMode.setChecked(param.getLogMode());
         tractionControl.setChecked(param.getAutoTraction());
+        yawGain.setText(String.valueOf(param.getYawGain()));
+        version.setText(String.format(getString(R.string.SET_BUILD), param.getBuildNumber()));
+    }
+
+    protected void submit() {
+        param.setYawGain(Float.parseFloat(yawGain.getText().toString()));
     }
 
     public void resetDialog() {
@@ -207,6 +226,7 @@ public class SettingsView extends AppCompatActivity
             case R.id.button:
                 Intent intent = new Intent(this, ListBTDevices.class);
                 this.startActivity(intent);
+                submit();
                 break;
             case R.id.defSettings:
                 resetDialog();

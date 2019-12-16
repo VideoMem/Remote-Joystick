@@ -1,10 +1,13 @@
 package com.example.remotejoystick;
 import android.app.Application;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+
 import java.util.LinkedList;
 
 
 public class AppParameters extends Application {
-
+    protected final int maxRecvSlots = 2048;
     protected double sensitivity;
     protected int power;
     protected int retractDelay;
@@ -14,7 +17,9 @@ public class AppParameters extends Application {
     public volatile SoundBuffer soundBuffer;
     protected String address = null;
     protected String name = null;
+    protected volatile LinkedList<String> sendCopy;
     public volatile LinkedList<String> sendStream;
+    protected volatile LinkedList<String> recvStream;
     public volatile boolean btStatus;
     protected int txBuffSize;
     public volatile double voltage;
@@ -24,6 +29,25 @@ public class AppParameters extends Application {
     protected boolean exitAll;
     protected boolean mute;
     protected boolean autoTraction;
+    protected float yawGain;
+
+    public float getYawGain() { return yawGain; }
+    public void setYawGain(float v) { yawGain = v; }
+
+    synchronized void addRecvStream(String msg) {
+        recvStream.add(msg);
+        while(recvStream.size() > maxRecvSlots)
+            recvStream.remove();
+    }
+
+    synchronized void addSendStream(String msg) {
+        sendCopy.add(msg);
+        while(sendCopy.size() > maxRecvSlots)
+            sendCopy.remove();
+    }
+
+    synchronized LinkedList<String> getRecvStream() { return recvStream; }
+    synchronized LinkedList<String> getSendStream() { return sendCopy; }
 
     public boolean getAutoTraction() { return autoTraction; }
     public void setAutoTraction(boolean v) { autoTraction = v; }
@@ -66,8 +90,8 @@ public class AppParameters extends Application {
     public void defaults() {
         setPower(255);
         setSensitivity(1);
-        setRetractDelay(300);
-        setRetractSpeed(10);
+        setRetractDelay(200);
+        setRetractSpeed(50);
         setCoordVisible(true);
         setSound(false);
         setTxBuffSize(32);
@@ -76,12 +100,26 @@ public class AppParameters extends Application {
         setLogAmount(50);
         setExitAll(false);
         setAutoTraction(true);
+        setYawGain(15);
     }
 
     public AppParameters() {
         soundBuffer = new SoundBuffer();
         sendStream  = new LinkedList<>();
+        sendCopy = new LinkedList<>();
+        recvStream = new LinkedList<>();
         defaults();
+    }
+
+    public String getBuildNumber() {
+        String version = getString(R.string.SET_UNAVAILABLE_BUILD);
+        try {
+            PackageInfo pInfo = getApplicationContext().getPackageManager().getPackageInfo(getPackageName(), 0);
+            version = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return version;
     }
 
     public AppParameters self() { return this; }

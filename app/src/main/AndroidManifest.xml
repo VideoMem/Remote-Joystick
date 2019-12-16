@@ -16,7 +16,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ListBTDevices"></activity>
+        <activity
+            android:name=".serial_monitor"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_serial_monitor"
+            android:theme="@style/FullscreenTheme"></activity>
+        <activity android:name=".ListBTDevices" />
         <activity
             android:name=".SettingsView"
             android:label="@string/title_activity_settings"
