@@ -121,7 +121,7 @@ public class XYView extends JoystickWidgets {
                 if(param.showCoordinates()) {
                     crossHair(movex, movey);
                     invalidate();
-                    //refreshTimer(300);
+                    refreshTimer(100);
                 }
             }
         };

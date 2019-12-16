@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -73,6 +75,7 @@ public class ListBTDevices extends AppCompatActivity implements MyRecyclerViewAd
 
     @Override
     public void onItemClick(View view, int position) {
+        Pallete colors = new Pallete();
         String info = adapter.getItem(position);
         String address = info.substring(info.length()-17);
         String name = info.substring(0, info.length()-17).trim();
@@ -80,9 +83,11 @@ public class ListBTDevices extends AppCompatActivity implements MyRecyclerViewAd
         Intent i = new Intent(this, MainActivity.class);
         i.putExtra(EXTRA_ADDRESS, address);
         i.putExtra("NAME", name);
-
+        MyRecyclerViewAdapter.ViewHolder holder = adapter.getHolder(position);
+        holder.myTextView.setTextColor(Color.parseColor(colors.foreground));
+        view.setBackgroundColor(Color.parseColor(colors.dark));
         Log.d("Address", address);
-        Toast.makeText(this,
+        Toast.makeText(getApplicationContext(),
                 String.format(this.getString(R.string.BT_connecting_to), name ,address),
                 Toast.LENGTH_SHORT).show();
 

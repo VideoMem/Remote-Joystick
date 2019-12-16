@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
@@ -15,11 +16,14 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     private List<String> mData;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
+    private List<ViewHolder> mHolders;
 
     // data is passed into the constructor
     MyRecyclerViewAdapter(Context context, List<String> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
+        mHolders = new LinkedList<>();
+        mHolders.clear();
     }
 
     // inflates the row layout from xml when needed
@@ -34,6 +38,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     public void onBindViewHolder(ViewHolder holder, int position) {
         String animal = mData.get(position);
         holder.myTextView.setText(animal);
+        mHolders.add(holder);
     }
 
     // total number of rows
@@ -63,6 +68,8 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     String getItem(int id) {
         return mData.get(id);
     }
+
+    ViewHolder getHolder(int id) { return mHolders.get(id); }
 
     // allows clicks events to be caught
     void setClickListener(ItemClickListener itemClickListener) {

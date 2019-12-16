@@ -137,51 +137,43 @@ public class BTConnManager extends Thread {
         }
     }
 
-    //private static class ConnectBT extends AsyncTask<Void, Void, Void> {
-        private boolean ConnectSuccess;
+    private boolean ConnectSuccess;
 
-      //  @Override
-        protected  void onPreExecute () {
-            Log.d("Connecting", "please wait");
-            msg("Connecting");
-            ConnectSuccess = true;
-        }
+    protected  void onPreExecute () {
+        Log.d("Connecting", "please wait");
+        msg("Connecting");
+        ConnectSuccess = true;
+    }
 
-        //@Override
-        protected void btConnect() {
-            onPreExecute();
-            try {
-                if ( btSocket==null || !param.getBtStatus() ) {
-                    myBluetooth = BluetoothAdapter.getDefaultAdapter();
-                    BluetoothDevice dispositivo = myBluetooth.getRemoteDevice(param.getAddress());
-                    btSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(myUUID);
-                    BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
-                    btSocket.connect();
-                }
-            } catch (IOException e) {
-                ConnectSuccess = false;
+    protected void btConnect() {
+        onPreExecute();
+        try {
+            if ( btSocket==null || !param.getBtStatus() ) {
+                myBluetooth = BluetoothAdapter.getDefaultAdapter();
+                BluetoothDevice dispositivo = myBluetooth.getRemoteDevice(param.getAddress());
+                btSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(myUUID);
+                BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
+                btSocket.connect();
             }
-            onPostExecute();
+        } catch (IOException e) {
+            ConnectSuccess = false;
+        }
+        onPostExecute();
+    }
+
+    protected void onPostExecute () {
+        if (!ConnectSuccess) {
+            msg("Connection Failed");
+            Log.d(TAG, "Connection Failed. Is it a SPP Bluetooth? Try again.");
+            param.setBtStatus(false);
+        } else {
+            msg("Connected");
+            Log.d(TAG, "Connected!");
+            param.setBtStatus(true);
+            lastSucessfulAddr = param.getAddress();
         }
 
-        //@Override
-        protected void onPostExecute () {
-          //  super.onPostExecute(result);
-
-            if (!ConnectSuccess) {
-                msg("Connection Failed");
-                Log.d(TAG, "Connection Failed. Is it a SPP Bluetooth? Try again.");
-                param.setBtStatus(false);
-            //    this.cancel(true);
-            } else {
-                msg("Connected");
-                Log.d(TAG, "Connected!");
-                param.setBtStatus(true);
-                lastSucessfulAddr = param.getAddress();
-            }
-
-        }
-    //}
+    }
 
     public void sendControlModeDecimal() {
         sendSignal("M5");
