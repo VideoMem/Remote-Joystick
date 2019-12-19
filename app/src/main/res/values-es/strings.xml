@@ -42,4 +42,5 @@
     <string name="title_activity_serial_monitor">Monitor Serial</string>
     <string name="SET_BUILD">Número de compilación %s</string>
     <string name="SET_UNAVAILABLE_BUILD">no disponible</string>
+    <string name="SET_Accelerometer_feedback">Realimentación del IMU</string>
 </resources>

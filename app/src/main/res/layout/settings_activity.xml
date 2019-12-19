@@ -204,7 +204,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
-                android:text="@string/SET_Automata_Behaviour"
+                android:text="@string/SET_Accelerometer_feedback"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <Switch

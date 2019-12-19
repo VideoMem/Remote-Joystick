@@ -76,5 +76,6 @@
     <string name="SET_YAWGAIN">Yaw P gain</string>
     <string name="SET_BUILD">Build number %s</string>
     <string name="SET_UNAVAILABLE_BUILD">not available</string>
+    <string name="SET_Accelerometer_feedback">IMU feedback</string>
 
 </resources>
